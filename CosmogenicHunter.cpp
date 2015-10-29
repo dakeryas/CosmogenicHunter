@@ -2,8 +2,9 @@
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
 #include "DCActionUnit.hh"
-#include "Event.hpp"
+#include "Muon.hpp"
 #include "Window.hpp"
+#include "Segment.hpp"
 
 namespace bpo = boost::program_options;
 
@@ -14,6 +15,14 @@ void hunt(unsigned runNumber, boost::filesystem::path outputPath){
   CosmogenicHunter::Window<CosmogenicHunter::Event> window(30e9, 2e9);
   window.emplaceEvent(31e9, 30, 9873528);
   window.pushBackEvent(event);
+  
+  CosmogenicHunter::Point<float> point1(1, 1, 2);
+  CosmogenicHunter::Point<float> point2(3, 2, 3);
+  CosmogenicHunter::Segment<float> segment(point1, point2);
+  std::cout<<segment.getDistanceTo(segment.getCenter())<<std::endl;
+  
+  CosmogenicHunter::Muon muon(event, 5e4, 8e4, segment);
+  std::cout<<muon<<std::endl;
   
   std::ofstream outputStream(outputPath.string());
   outputStream<<window<<std::endl;
