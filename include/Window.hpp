@@ -17,6 +17,9 @@ namespace CosmogenicHunter{
   public:
     Window() = default;
     Window(double startTime, double lenght);
+    Window(const Window<T>& other) = default;
+    Window(Window<T>&& other) = default;
+    ~Window() = default;
     double getStartTime() const;
     double getLenght() const;
     unsigned getNumberOfEvents() const;
@@ -89,7 +92,7 @@ namespace CosmogenicHunter{
     
     if(lenght > 0){
     
-      if(lenght < this->lenght) events.erase(std::find_if(events.begin(), events.end(), [&](const auto& event){return event.getTriggerTime() >= startTime + lenght;}), events.end());;
+      if(lenght < this->lenght) events.erase(std::find_if(events.begin(), events.end(), [&](const auto& event){return event.getTriggerTime() >= startTime + lenght;}), events.end());
       this->lenght = lenght;
       
     }

@@ -3,9 +3,7 @@
 
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Event& event){
   
-  output<<std::setw(15)<<std::left<<"Trigger time"<<": "<<std::setw(6)<<std::left<<event.getTriggerTime()
-    <<std::setw(16)<<std::left<<"\nVisible energy"<<": "<<std::setw(3)<<std::left<<event.getVisibleEnergy()
-    <<std::setw(16)<<std::left<<"\nIdentifier"<<": "<<std::setw(8)<<std::left<<event.getIdentifier();
+  event.print(output);//print to output
   return output;
   
 }
@@ -32,6 +30,14 @@ namespace CosmogenicHunter{
     
     return identifier;
 
+  }
+  
+  void Event::print(std::ostream& output) const{
+
+    output<<std::setw(14)<<std::left<<"Trigger time"<<": "<<std::setw(6)<<std::left<<triggerTime
+    <<std::setw(15)<<std::left<<"\nVisible energy"<<": "<<std::setw(3)<<std::left<<visibleEnergy
+    <<std::setw(15)<<std::left<<"\nIdentifier"<<": "<<std::setw(8)<<std::left<<identifier;
+    
   }
 
 }
