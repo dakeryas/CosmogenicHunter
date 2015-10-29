@@ -9,11 +9,22 @@ MAKEFLAGS := -j$(shell nproc)
 ROOTFLAGS := $(shell root-config --cflags)
 INCLUDEFLAGS := -I. -I$(IDIR)
 INCLUDEFLAGS += -I$(BOOST_PATH)/include
+INCLUDEFLAGS += -I$(DOGS_PATH)/include
 OPTFLAGS := -Wall -Wextra -O3 -MMD -MP
 FLAGS = $(ROOTFLAGS) $(INCLUDEFLAGS) $(OPTFLAGS)
 
 LIBS :=  $(shell root-config --libs)
 LIBS += -lrt
+LIBS += -L$(DOGS_PATH)/lib/
+LIBS += -lDCBase
+LIBS += -lDCDB
+LIBS += -lDCGeo
+LIBS += -lDCEvent
+LIBS += -lDCValidity
+LIBS += -lDCRegistry
+LIBS += -lDCDBInterface
+LIBS += -lDCCalibApply
+LIBS += -lDCUtil
 LIBS += -L$(BOOST_PATH)/lib -lboost_filesystem -lboost_system -lboost_program_options
 
 OBJS := $(patsubst %.cpp,%.o,$(addprefix $(ODIR)/,$(wildcard *.cpp)))

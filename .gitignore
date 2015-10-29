@@ -1,4 +1,5 @@
 .gitignore
+CosmogenicHunter
 *.[oda]
 *.kdev*
 *.kdev4
