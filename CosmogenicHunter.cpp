@@ -3,6 +3,8 @@
 #include "boost/program_options.hpp"
 #include "DCActionUnit.hh"
 #include "Muon.hpp"
+#include "Neutron.hpp"
+#include "Candidate.hpp"
 #include "Window.hpp"
 #include "Segment.hpp"
 
@@ -22,7 +24,9 @@ void hunt(unsigned runNumber, boost::filesystem::path outputPath){
   std::cout<<segment.getDistanceTo(segment.getCenter())<<std::endl;
   
   CosmogenicHunter::Muon muon(event, 5e4, 8e4, segment);
-  std::cout<<muon<<std::endl;
+  CosmogenicHunter::Neutron neutron(event, point2);
+  CosmogenicHunter::Candidate candidate(event, point2, 3);
+  std::cout<<"muon:\n"<<muon<<"\nneutron:\n"<<neutron<<"\ncandidate:\n"<<candidate<<std::endl;
   
   std::ofstream outputStream(outputPath.string());
   outputStream<<window<<std::endl;
