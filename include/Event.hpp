@@ -23,11 +23,13 @@ namespace CosmogenicHunter{
     float getVisibleEnergy() const;
     unsigned getIdentifier() const;//identifier of the event within the corresponding run
     virtual void print(std::ostream& output) const;//needed to act as if 'operator<<' was virtual
+    bool isEqualTo(const Event& other) const;//checks identifiers only
     
   };
 
 }
 
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Event& event);
+bool operator == (const CosmogenicHunter::Event& event1, const CosmogenicHunter::Event& event2);
 
 #endif
