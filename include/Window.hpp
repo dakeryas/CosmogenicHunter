@@ -12,7 +12,7 @@ namespace CosmogenicHunter{
     
     double startTime;
     double lenght;
-    std::deque<T> events;
+    std::deque<T> events;//class T must implement 'getTriggerTime'
     
   public:
     Window() = default;
@@ -27,12 +27,14 @@ namespace CosmogenicHunter{
     typename std::deque<T>::const_iterator end() const;
     void setStartTime(double startTime);
     void setLenght(double lenght);
+    void setEndTime(double endTime);
     bool covers(double triggerTime) const;//check if the trigger is within the time window
     bool covers(const T& event) const;//check if the event is within the time window
     bool isEmpty() const;
     template <class... Args>
     void emplaceEvent(double triggerTime, Args&&... args);//emplace back the event if it is within the window
-    void pushBackEvent(const T& event);//push back the event if it is within the window (slower than emplace)
+    void pushBackEvent(const T& event);//push back the event if it is within the window
+    void pushBackEvent(T&& event);//'T&&' is not a 'universal reference' since T has been deduced already at the instantation of Window<T>, so 'T&&' can only bind to rvalue references and not lvalues
     void clear();//clear all events
     
   };
@@ -98,6 +100,13 @@ namespace CosmogenicHunter{
     }
 
   }
+  
+  template <class T>
+  void Window<T>::setEndTime(double endTime){
+    
+    setStartTime(endTime - lenght);
+
+  }
 
   template <class T>
   bool Window<T>::covers(double triggerTime) const{
@@ -127,9 +136,16 @@ namespace CosmogenicHunter{
     if(covers(triggerTime)) events.emplace_back(triggerTime, std::forward<Args>(args)...);
 
   }
-
+  
   template <class T>
   void Window<T>::pushBackEvent(const T& event){
+    
+    if(covers(event)) events.push_back(event);
+
+  }
+
+  template <class T>
+  void Window<T>::pushBackEvent(T&& event){
     
     if(covers(event)) events.push_back(event);
 
