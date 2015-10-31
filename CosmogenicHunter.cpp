@@ -2,11 +2,9 @@
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
 #include "DCActionUnit.hh"
-#include "Muon.hpp"
+#include "MuonShower.hpp"
 #include "Neutron.hpp"
 #include "Candidate.hpp"
-#include "Window.hpp"
-#include "Segment.hpp"
 
 namespace bpo = boost::program_options;
 
@@ -21,12 +19,15 @@ void hunt(unsigned runNumber, boost::filesystem::path outputPath){
   CosmogenicHunter::Point<float> point1(1, 1, 2);
   CosmogenicHunter::Point<float> point2(3, 2, 3);
   CosmogenicHunter::Segment<float> segment(point1, point2);
-  std::cout<<segment.getDistanceTo(segment.getCenter())<<std::endl;
   
   CosmogenicHunter::Muon muon(event, 5e4, 8e4, segment);
   CosmogenicHunter::Neutron neutron(event, point2);
   CosmogenicHunter::Candidate candidate(event, point2, 3);
-  std::cout<<"muon:\n"<<muon<<"\nneutron:\n"<<neutron<<"\ncandidate:\n"<<candidate<<std::endl;
+  CosmogenicHunter::MuonShower muonShower(muon, 2e9);
+  muonShower.pushBackNeutron(neutron);
+  muonShower.emplaceNeutron(32e9, 8, 106785, CosmogenicHunter::Point<float>(5, 5, 5));
+  muonShower.emplaceNeutron(33e9, 8, 106785, CosmogenicHunter::Point<float>(1, 5, 5));
+  std::cout<<muonShower<<std::endl;
   
   std::ofstream outputStream(outputPath.string());
   outputStream<<window<<std::endl;
