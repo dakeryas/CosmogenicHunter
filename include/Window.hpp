@@ -29,10 +29,13 @@ namespace CosmogenicHunter{
     void setLenght(double lenght);
     void setEndTime(double endTime);
     bool covers(double triggerTime) const;//check if the trigger is within the time window
-    bool covers(const T& event) const;//check if the event is within the time window
+    template <class K>
+    bool covers(const K& event) const;//check if the event is within the time window (event need not be of the same 'event type' as the ones stored in the window)
     bool isEmpty() const;
     template <class... Args>
     void emplaceEvent(double triggerTime, Args&&... args);//emplace back the event if it is within the window
+    template <class BaseClass, class... Args>
+    void emplaceEvent(BaseClass eventBase, Args&&... args);//meant for Derived::BaseClass built from a BaseClass that implements 'getTriggerTime'
     void pushBackEvent(const T& event);//push back the event if it is within the window
     void pushBackEvent(T&& event);//'T&&' is not a 'universal reference' since T has been deduced already at the instantation of Window<T>, so 'T&&' can only bind to rvalue references and not lvalues
     void clear();//clear all events
@@ -116,7 +119,8 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
-  bool Window<T>::covers(const T& event) const{
+  template <class K>
+  bool Window<T>::covers(const K& event) const{
     
     return covers(event.getTriggerTime());
 
@@ -134,6 +138,14 @@ namespace CosmogenicHunter{
   void Window<T>::emplaceEvent(double triggerTime, Args&&... args){
     
     if(covers(triggerTime)) events.emplace_back(triggerTime, std::forward<Args>(args)...);
+
+  }
+  
+  template <class T>
+  template <class BaseClass, class... Args>
+  void Window<T>::emplaceEvent(BaseClass eventBase, Args&&... args){
+    
+    if(covers(eventBase)) events.emplace_back(eventBase, std::forward<Args>(args)...);
 
   }
   

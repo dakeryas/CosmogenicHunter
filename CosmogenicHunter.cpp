@@ -25,7 +25,7 @@ void hunt(unsigned runNumber, boost::filesystem::path outputPath){
   CosmogenicHunter::Candidate candidate(event, point2, 3);
   CosmogenicHunter::MuonShower muonShower(muon, 2e9);
   muonShower.pushBackNeutron(neutron);
-  muonShower.emplaceNeutron(32e9, 8, 106785, CosmogenicHunter::Point<float>(5, 5, 5));
+  muonShower.emplaceNeutron(event, CosmogenicHunter::Point<float>(5, 5, 5));
   muonShower.emplaceNeutron(33e9, 8, 106785, CosmogenicHunter::Point<float>(1, 5, 5));
   std::cout<<muonShower<<std::endl;
   
