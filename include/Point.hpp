@@ -3,6 +3,7 @@
 
 #include <iomanip>
 #include <cmath>
+#include "cereal/archives/binary.hpp"
 
 namespace CosmogenicHunter{
 
@@ -10,6 +11,9 @@ namespace CosmogenicHunter{
   class Point{
     
     T x, y, z;
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
     
   public:
     Point() = default;
@@ -30,6 +34,14 @@ namespace CosmogenicHunter{
     Point<T> getMidpointTo(const Point& otherPoint) const;
     
   };
+  
+  template <class T>
+  template <class Archive>
+  void Point<T>::serialize(Archive& archive){
+    
+    archive(x, y, z);
+
+  }
 
   template <class T>
   Point<T>::Point(T x, T y, T z):x(x),y(y),z(z){

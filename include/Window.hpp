@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <queue>
 #include <algorithm>
+#include "cereal/types/deque.hpp"
 
 namespace CosmogenicHunter{
 
@@ -13,6 +14,9 @@ namespace CosmogenicHunter{
     double startTime;
     double lenght;
     std::deque<T> events;//class T must implement 'getTriggerTime'
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
     
   public:
     Window() = default;
@@ -41,7 +45,15 @@ namespace CosmogenicHunter{
     void clear();//clear all events
     
   };
+  
+  template <class T>
+  template <class Archive>
+  void Window<T>::serialize(Archive& archive){
+    
+    archive(startTime, lenght, events);
 
+  }
+  
   template <class T>
   Window<T>::Window(double startTime, double lenght):startTime(startTime),lenght(std::abs(lenght)){
     
@@ -171,6 +183,20 @@ namespace CosmogenicHunter{
   }
 
 }
+
+// Foward declaration of operator<< for Shower otherwise Window cannot print Shower's
+
+namespace CosmogenicHunter{
+  
+  template <class Initiator, class Follower>
+  class Shower;
+  
+}
+
+template <class Initiator, class Follower>
+std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Shower<Initiator,Follower>& shower);
+
+//Declaration end
 
 template <class T>
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Window<T>& window){

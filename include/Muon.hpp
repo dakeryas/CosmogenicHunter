@@ -11,6 +11,9 @@ namespace CosmogenicHunter{
     float vetoCharge;
     float detectorCharge;
     Segment<float> track;
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
     
   public:
     Muon() = default;
@@ -21,6 +24,13 @@ namespace CosmogenicHunter{
     const Segment<float>& getTrack() const;
     
   };
+  
+  template <class Archive>
+  void Muon::serialize(Archive& archive){
+    
+    archive(cereal::base_class<Event>(this), vetoCharge, detectorCharge, track);
+
+  }
 
 }
 

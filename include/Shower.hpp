@@ -10,6 +10,9 @@ namespace CosmogenicHunter{
     
     Initiator initiator;//Initiator creating the follower flux
     Window<Follower> followerWindow;
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
     
   public:
     Shower() = default;
@@ -24,6 +27,14 @@ namespace CosmogenicHunter{
     void pushBackFollower(Follower&& follower);
     
   };
+  
+  template <class Initiator, class Follower>
+  template <class Archive>
+  void Shower<Initiator, Follower>::serialize(Archive& archive){
+    
+    archive(initiator, followerWindow);
+
+  }
 
   template <class Initiator, class Follower>
   template <class... Args>

@@ -8,6 +8,7 @@ EXECUTABLE = $(patsubst %.cpp,%, $(MAIN))
 MAKEFLAGS := -j$(shell nproc)
 ROOTFLAGS := $(shell root-config --cflags)
 INCLUDEFLAGS := -I. -I$(IDIR)
+INCLUDEFLAGS += -I$(APPLICATIONS_PATH)
 INCLUDEFLAGS += -I$(BOOST_PATH)/include
 INCLUDEFLAGS += -I$(DOGS_PATH)/include
 OPTFLAGS := -Wall -Wextra -O3 -MMD -MP

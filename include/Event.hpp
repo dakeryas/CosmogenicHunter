@@ -2,6 +2,7 @@
 #define EVENT_H
 
 #include <iomanip>
+#include "cereal/archives/binary.hpp"
 
 namespace CosmogenicHunter{
 
@@ -10,6 +11,9 @@ namespace CosmogenicHunter{
     double triggerTime;
     float visibleEnergy;
     unsigned identifier;
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
 
   public:
     Event() = default;
@@ -26,6 +30,13 @@ namespace CosmogenicHunter{
     bool isEqualTo(const Event& other) const;//checks identifiers only
     
   };
+  
+  template <class Archive>
+  void Event::serialize(Archive& archive){
+    
+    archive(triggerTime, visibleEnergy, identifier);
+
+  }
 
 }
 

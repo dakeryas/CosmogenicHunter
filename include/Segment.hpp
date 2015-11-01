@@ -10,6 +10,9 @@ namespace CosmogenicHunter{
 
     Point<T> startPoint;
     Point<T> endPoint;
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
     
   public:
     Segment() = default;
@@ -31,6 +34,14 @@ namespace CosmogenicHunter{
     T getDistanceTo(const Point<T>& point) const;//get the shortest distance to the line defined by the segment
     
   };
+  
+  template <class T>
+  template <class Archive>
+  void Segment<T>::serialize(Archive& archive){
+    
+    archive(startPoint, endPoint);
+
+  }
 
   template <class T>
   Segment<T>::Segment(const Point<T>& startPoint, const Point<T>& endPoint):startPoint(startPoint),endPoint(endPoint){

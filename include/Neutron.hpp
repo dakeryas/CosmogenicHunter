@@ -9,6 +9,9 @@ namespace CosmogenicHunter{
   class Neutron : public Event{
     
     Point<float> position;//RecoBAMA reconstructed positon
+    friend class cereal::access;
+    template <class Archive>
+    void serialize(Archive& archive);
     
   public:
     Neutron() = default;
@@ -17,6 +20,13 @@ namespace CosmogenicHunter{
     const Point<float>& getPosition() const;
     
   };
+  
+  template <class Archive>
+  void Neutron::serialize(Archive& archive){
+    
+    archive(cereal::base_class<Event>(this), position);
+
+  }
 
 }
 
