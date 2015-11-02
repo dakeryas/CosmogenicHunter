@@ -204,8 +204,14 @@ std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Window<T>
   output<<std::setw(12)<<std::left<<"Start time: "<<std::setw(8)<<std::left<<window.getStartTime()<<std::setw(8)<<std::left<<" Lenght: "<<std::setw(8)<<std::left<<window.getLenght()
     <<std::setw(14)<<std::left<<"Number of events: "<<std::setw(8)<<std::left<<window.getNumberOfEvents();
     
-  if(!window.isEmpty()) for(const auto& event : window) output<<"\n"<<event;
-    
+  if(!window.isEmpty())
+    for(const auto& event : window){
+      
+      output<<"\n";
+      event.print(output, 3);//offset all events by 3 spaces
+      
+    }
+      
   return output;
   
 }

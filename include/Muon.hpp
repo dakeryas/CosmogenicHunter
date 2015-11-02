@@ -22,6 +22,7 @@ namespace CosmogenicHunter{
     float getVetoCharge() const;
     float getDetectorCharge() const;
     const Segment<float>& getTrack() const;
+    void print(std::ostream& output, unsigned outputOffset) const;
     
   };
   

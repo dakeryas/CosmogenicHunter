@@ -26,7 +26,7 @@ namespace CosmogenicHunter{
     double getTriggerTime() const;
     float getVisibleEnergy() const;
     unsigned getIdentifier() const;//identifier of the event within the corresponding run
-    virtual void print(std::ostream& output) const;//needed to act as if 'operator<<' was virtual
+    virtual void print(std::ostream& output, unsigned outputOffset) const;//needed to act as if 'operator<<' was virtual
     bool isEqualTo(const Event& other) const;//checks identifiers only
     
   };

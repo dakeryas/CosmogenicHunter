@@ -3,7 +3,7 @@
 
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Event& event){
   
-  event.print(output);//print to output
+  event.print(output, 0);//print to output
   return output;
   
 }
@@ -38,11 +38,11 @@ namespace CosmogenicHunter{
 
   }
   
-  void Event::print(std::ostream& output) const{
+  void Event::print(std::ostream& output, unsigned outputOffset) const{
 
-    output<<std::setw(14)<<std::left<<"Trigger time"<<": "<<std::setw(6)<<std::left<<triggerTime
-    <<std::setw(15)<<std::left<<"\nVisible energy"<<": "<<std::setw(3)<<std::left<<visibleEnergy
-    <<std::setw(15)<<std::left<<"\nIdentifier"<<": "<<std::setw(8)<<std::left<<identifier;
+    output<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Trigger time"<<": "<<std::setw(6)<<std::left<<triggerTime
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Energy"<<": "<<std::setw(3)<<std::left<<visibleEnergy
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Identifier"<<": "<<std::setw(8)<<std::left<<identifier;
     
   }
   

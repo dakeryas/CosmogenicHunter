@@ -1,23 +1,16 @@
 #include "Candidate.hpp"
 
-
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Candidate& candidate){
   
-  candidate.print(output);//print the base class
-  output<<std::setw(15)<<std::left<<"\nPosition"<<": "<<candidate.getPosition()
-    <<std::setw(15)<<std::left<<"\nGoodness"<<": "<<candidate.getReconstructionGoodness();
+  candidate.print(output, 0);
   return output;
   
 }
 
 namespace CosmogenicHunter{
 
-  Candidate::Candidate(Event event, Point<float> position, float reconstructionGoodness):Event(event), position(position),reconstructionGoodness(reconstructionGoodness){
-    
-  }
-  
-  Candidate::Candidate(double triggerTime, float visibleEnergy, unsigned identifier, Point<float> position, float reconstructionGoodness)
-  :Candidate(Event(triggerTime, visibleEnergy, identifier), position, reconstructionGoodness){
+  Candidate::Candidate(Event event, Point<float> position, float reconstructionGoodness, ChargeInformation chargeInformation)
+  :Event(event), position(position),reconstructionGoodness(reconstructionGoodness),chargeInformation(chargeInformation){
     
   }
 
@@ -31,6 +24,22 @@ namespace CosmogenicHunter{
     
     return reconstructionGoodness;
     
+  }
+  
+  const ChargeInformation& Candidate::getChargeInformation() const{
+    
+    return chargeInformation;
+    
+  }
+  
+  void Candidate::print(std::ostream& output, unsigned outputOffset) const{
+    
+    Event::print(output, outputOffset);//print the base class
+    output<<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Position"<<": "<<position
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Goodness"<<": "<<reconstructionGoodness
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Charge"<<":\n";
+    chargeInformation.print(output, outputOffset + 3);  
+
   }
 
 }

@@ -96,8 +96,9 @@ namespace CosmogenicHunter{
 template <class Initiator, class Follower>
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Shower<Initiator,Follower>& shower){
   
-  output<<std::setw(14)<<std::left<<"Initiator"<<":\n"<<shower.getInitiator()
-    <<std::setw(15)<<std::left<<"\nFollowers"<<":\n"<<shower.getFollowerWindow();
+  output<<std::setw(9)<<std::left<<"Initiator"<<":\n";
+  shower.getInitiator().print(output, 3);//offset the initiator by 3 spaces
+  output<<std::setw(10)<<std::left<<"\nFollowers"<<":\n"<<shower.getFollowerWindow();
   return output;
   
 }

@@ -3,8 +3,7 @@
 
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Neutron& neutron){
   
-  neutron.print(output);//print the base class
-  output<<std::setw(15)<<std::setw(15)<<std::left<<"\nPosition"<<": "<<neutron.getPosition();
+  neutron.print(output, 0);//print the base class
   return output;
   
 }
@@ -22,6 +21,13 @@ namespace CosmogenicHunter{
   const Point<float>& Neutron::getPosition() const{
     
     return position;
+
+  }
+  
+  void Neutron::print(std::ostream& output, unsigned outputOffset) const{
+    
+    Event::print(output, outputOffset);//print the base class
+    output<<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Position"<<": "<<position;
 
   }
 

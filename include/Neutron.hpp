@@ -18,6 +18,7 @@ namespace CosmogenicHunter{
     Neutron(Event event, Point<float> position);
     Neutron(double triggerTime, float visibleEnergy, unsigned identifier, Point<float> position);
     const Point<float>& getPosition() const;
+    void print(std::ostream& output, unsigned outputOffset) const;
     
   };
   

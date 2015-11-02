@@ -3,10 +3,7 @@
 
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Muon& muon){
   
-  muon.print(output);//print the base class
-  output<<std::setw(15)<<std::left<<"\nIV Charge"<<": "<<std::setw(6)<<std::left<<muon.getVetoCharge()
-    <<std::setw(15)<<std::left<<"\nID Charge"<<": "<<std::setw(3)<<std::left<<muon.getDetectorCharge()
-    <<std::setw(15)<<std::left<<"\nTrack"<<": "<<muon.getTrack();
+  muon.print(output, 0);
   return output;
   
 }
@@ -38,6 +35,15 @@ namespace CosmogenicHunter{
   const Segment<float>& Muon::getTrack() const{
     
     return track;
+
+  }
+  
+  void Muon::print(std::ostream& output, unsigned outputOffset) const{
+    
+    Event::print(output, outputOffset);//print the base class
+    output<<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"IV Charge"<<": "<<std::setw(6)<<std::left<<vetoCharge
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"ID Charge"<<": "<<std::setw(3)<<std::left<<detectorCharge
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Track"<<": "<<track;
 
   }
 
