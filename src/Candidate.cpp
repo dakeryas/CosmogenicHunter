@@ -9,7 +9,7 @@ std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Candidate
 
 namespace CosmogenicHunter{
 
-  Candidate::Candidate(Event event, Point<float> position, float reconstructionGoodness, ChargeInformation chargeInformation)
+  Candidate::Candidate(Event event, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation)
   :Event(event), position(position),reconstructionGoodness(reconstructionGoodness),chargeInformation(chargeInformation){
     
   }
@@ -26,7 +26,7 @@ namespace CosmogenicHunter{
     
   }
   
-  const ChargeInformation& Candidate::getChargeInformation() const{
+  const ChargeInformation<float>& Candidate::getChargeInformation() const{
     
     return chargeInformation;
     
