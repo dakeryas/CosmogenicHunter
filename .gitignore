@@ -3,6 +3,7 @@ CosmogenicHunter
 *.[oda]
 *.kdev*
 *.kdev4
+*.bin
 *~
 
 
