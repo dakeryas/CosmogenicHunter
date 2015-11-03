@@ -23,9 +23,9 @@ namespace CosmogenicHunter{
     Point<T>& operator = (const Point<T>& other) = default;
     Point<T>& operator = (Point<T>&& other) = default;
     ~Point() = default;
-    const T & getX() const;
-    const T & getY() const;
-    const T & getZ() const;
+    T getX() const;
+    T getY() const;
+    T getZ() const;
     void setX(T x);
     void setY(T y);
     void setZ(T z);
@@ -49,21 +49,21 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
-  const T & Point<T>::getX() const{
+  T Point<T>::getX() const{
     
     return x;
 
   }
 
   template <class T>
-  const T & Point<T>::getY() const{
+  T Point<T>::getY() const{
     
     return y;
 
   }
 
   template <class T>
-  const T & Point<T>::getZ() const{
+  T Point<T>::getZ() const{
     
     return z;
 
