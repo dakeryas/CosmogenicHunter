@@ -26,6 +26,7 @@ namespace CosmogenicHunter{
     T getX() const;
     T getY() const;
     T getZ() const;
+    T getR() const;//sqrt(x2 + y2)
     void setX(T x);
     void setY(T y);
     void setZ(T z);
@@ -66,6 +67,13 @@ namespace CosmogenicHunter{
   T Point<T>::getZ() const{
     
     return z;
+
+  }
+  
+  template <class T>
+  T Point<T>::getR() const{
+    
+    return std::sqrt(std::pow(x,2) + std::pow(y,2));
 
   }
 
