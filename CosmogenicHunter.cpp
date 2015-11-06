@@ -66,14 +66,14 @@ void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const b
       if(energy > muonDefinition.visibleEnergyThreshold && chargeIV > muonDefinition.IVChargeThreshold){
 	
 	float chargeID = globalInfo->GetChargeID(DC::kCharge_AlgoMiniDATA);
-	
+
 	recoMuHamInfo = energyDeposit.GetRecoMuHamIDInfo();
 	CsHt::Point<float> entryPoint(recoMuHamInfo->GetEntryID()[0], recoMuHamInfo->GetEntryID()[1], recoMuHamInfo->GetEntryID()[2]);
 	CsHt::Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
 	CsHt::Segment<float> track(entryPoint, exitPoint);
 	
 	CsHt::Muon muon(triggerTime, energy, identifier, chargeID, chargeIV, track);
-	outputArchive(muon);
+	if(entryPoint != CsHt::Point<float>(0,0,0)) outputArchive(muon);
       
       }
       
@@ -96,29 +96,7 @@ void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const b
   }
 
 }
-  
-  CsHt::Muon candidateInput;
-  std::ifstream inputStream(outputPath.string(), std::ios::binary);
-  cereal::BinaryInputArchive inputArchive(inputStream);
-  
-  unsigned inputCounter{};
-  while(true){
-    
-    try{
-      
-      inputArchive(candidateInput);
-      ++inputCounter;
-      
-    }
-    catch(cereal::Exception& e){
-      
-      break;
-      
-    }
-    
-  }
-  std::cout<<"Read "<<inputCounter<<" events"<<std::endl;
-  
+
 }
 
 int main(int argc, char* argv[]){
