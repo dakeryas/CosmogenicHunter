@@ -13,6 +13,11 @@ namespace CosmogenicHunter{
   :Event(event), position(position),reconstructionGoodness(reconstructionGoodness),chargeInformation(chargeInformation){
     
   }
+  
+  Candidate::Candidate(double triggerTime, float visibleEnergy, unsigned identifier, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation)
+  :Event(triggerTime, visibleEnergy, identifier), position(position),reconstructionGoodness(reconstructionGoodness),chargeInformation(chargeInformation){
+    
+  }
 
   const Point<float>& Candidate::getPosition() const{
     

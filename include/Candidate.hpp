@@ -16,6 +16,7 @@ namespace CosmogenicHunter{
   public:
     Candidate() = default;
     Candidate(Event event, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation);
+    Candidate(double triggerTime, float visibleEnergy, unsigned identifier, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation);
     const Point<float>& getPosition() const;
     float getReconstructionGoodness() const;
     const ChargeInformation<float>& getChargeInformation() const;
