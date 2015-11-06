@@ -1,7 +1,7 @@
 #include <iostream>
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
-#include "DCActionUnit.hh"
+#include "DCCalib-TypeDef.hh"
 #include "Muon.hpp"
 #include "Neutron.hpp"
 #include "Candidate.hpp"
@@ -11,74 +11,131 @@ namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;
 using MuonShower = CsHt::Shower<CsHt::Muon, CsHt::Neutron>;
 
-void hunt(unsigned runNumber, boost::filesystem::path outputPath){
-  
-  CsHt::Event event(31.5e9, 30, 9873528);
-  
-  CsHt::Window<CsHt::Event> window(30e9, 2e9);
-  window.emplaceEvent(31e9, 30, 9873528);
-  window.pushBackEvent(event);
-  
-  CsHt::Point<float> point1(1, 1, 2);
-  CsHt::Point<float> point2(3, 2, 3);
-  CsHt::Segment<float> segment(point1, point2);
-  
-  CsHt::Muon muon(event, 5e4, 8e4, segment);
-  CsHt::Neutron neutron(event, point2);
-  CsHt::Candidate candidate(event, point2, 3);
-  MuonShower muonShower(muon, 2e9);
-  muonShower.pushBackFollower(neutron);
-  muonShower.emplaceFollower(event, CsHt::Point<float>(5, 5, 5));
-  muonShower.emplaceFollower(33e9, 8, 106785, CsHt::Point<float>(1, 5, 5));
-  CsHt::Window<MuonShower> muonShowers(muonShower.getTriggerTime(), 20e9);
-  for(unsigned k = 0; k  < 10*30*20; ++k) muonShowers.pushBackEvent(muonShower);
-  
-  {
+namespace CosmogenicHunter {
+
+  struct MuonDefinition{
     
-    std::ofstream outputStream(outputPath.string(), std::ios::binary);
-    cereal::BinaryOutputArchive outputArchive(outputStream);
-    outputArchive(event);
-    outputArchive(neutron);
-    outputArchive(muon);
-    outputArchive(muonShowers);
-  
-  }
-  
-  std::ifstream inputStream(outputPath.string(), std::ios::binary);
-  cereal::BinaryInputArchive inputArchive(inputStream);
-  
-  CsHt::Window<MuonShower> muonShowersInput;
-  CsHt::Event inputEvent;
-  inputArchive(inputEvent);
-  inputArchive(CsHt::Neutron());
-  inputArchive(CsHt::Muon());
-  inputArchive(muonShowersInput);
-//   std::cout<<muonShowersInput<<std::endl;
+    float IVChargeThreshold, energyToIDChargeFactor, visibleEnergyThreshold;
+    float getIDChargeThreshold() const{ //to be used for mini data only
+      
+      return visibleEnergyThreshold * energyToIDChargeFactor;
+      
+    }
+    
+  };
+
+}
+
+void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const CsHt::MuonDefinition& muonDefinition){
   
   Message::SetLevelMSG(DC::kMERROR);
   
-  EnDep::SetDirDataINPUT("$HOME/Documents/dchooz/cosmogenic/Data/RunsCT/");
+  EnDep::SetDirDataINPUT(targetPath.c_str());
   EnDep::SetRunNumber(runNumber);
   
-  Processor::GetME()->CancelAllInfoCapsule_Tree();
-  Processor::GetME()->UncancelInfoCapsule_Tree(DC::kGlobalIT);
-  Processor::GetME()->UncancelInfoCapsule_Tree(DC::kRecoBAMAIT);
-  Processor::GetME()->UncancelInfoCapsule_Tree(DC::kRecoMuHamIDIT);
-  Processor::GetME()->SaveOutput(false);
-//   Processor::GetME()->Run();
+  EnDep energyDeposit;
+  energyDeposit.CancelAllInfoCapsule_Tree();
+  energyDeposit.UncancelInfoCapsule_Tree(DC::kRunIT);
+  energyDeposit.UncancelInfoCapsule_Tree(DC::kGlobalIT);
+  energyDeposit.UncancelInfoCapsule_Tree(DC::kRecoBAMAIT);
+  energyDeposit.UncancelInfoCapsule_Tree(DC::kRecoMuHamIDIT);
+  energyDeposit.RetrieveME();
+
+  const GlobalInfo* globalInfo;
+  const RecoBAMAInfo* recoBAMAInfo;
+  const RecoMuHamIDInfo* recoMuHamInfo;
+
+{  
+  std::ofstream outputStream(outputPath.string(), std::ios::binary);
+  cereal::BinaryOutputArchive outputArchive(outputStream);
+
+  while(energyDeposit.Next()){
+    
+    globalInfo = energyDeposit.GetGlobalInfo();
+    double triggerTime = globalInfo->GetTrigTime();
+    double numberOfPhotoElectrons = globalInfo->GetCaloPEID(DC::kCaloPEDefaultDC);
+    unsigned identifier = globalInfo->GetTriggerID();
+    
+    if(numberOfPhotoElectrons > 0){
+    
+      recoBAMAInfo = energyDeposit.GetRecoBAMAInfo();
+      CsHt::Point<float> position(recoBAMAInfo->GetRecoX()[0], recoBAMAInfo->GetRecoX()[1], recoBAMAInfo->GetRecoX()[2]);
+      float energy = Calib::GetME(energyDeposit.GetVldContext())->EvisID(numberOfPhotoElectrons, globalInfo->GetNGoodChID(), position.getR(), position.getZ(), DCSimFlag::kDATA, DC::kESv10);
+      float chargeIV = globalInfo->GetChargeIV(DC::kCharge_AlgoMiniDATA);//we are looking for muons, so compare them with the mini data algorithm
+      
+      if(energy > muonDefinition.visibleEnergyThreshold && chargeIV > muonDefinition.IVChargeThreshold){
+	
+	float chargeID = globalInfo->GetChargeID(DC::kCharge_AlgoMiniDATA);
+	
+	recoMuHamInfo = energyDeposit.GetRecoMuHamIDInfo();
+	CsHt::Point<float> entryPoint(recoMuHamInfo->GetEntryID()[0], recoMuHamInfo->GetEntryID()[1], recoMuHamInfo->GetEntryID()[2]);
+	CsHt::Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
+	CsHt::Segment<float> track(entryPoint, exitPoint);
+	
+	CsHt::Muon muon(triggerTime, energy, identifier, chargeID, chargeIV, track);
+	outputArchive(muon);
+      
+      }
+      
+    }
+    else if(globalInfo->HitIV(DC::kIVMuon)){
+      
+      float chargeID = globalInfo->GetChargeID(DC::kCharge_AlgoMiniDATA);
+      float chargeIV = globalInfo->GetChargeIV(DC::kCharge_AlgoMiniDATA);
+      
+      recoMuHamInfo = energyDeposit.GetRecoMuHamIDInfo();
+      CsHt::Point<float> entryPoint(recoMuHamInfo->GetEntryID()[0], recoMuHamInfo->GetEntryID()[1], recoMuHamInfo->GetEntryID()[2]);
+      CsHt::Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
+      CsHt::Segment<float> track(entryPoint, exitPoint);
+
+      CsHt::Muon muon(triggerTime, chargeID / muonDefinition.energyToIDChargeFactor, identifier, chargeIV, chargeID, track);
+      if(entryPoint != CsHt::Point<float>(0,0,0) && chargeID > muonDefinition.getIDChargeThreshold()) outputArchive(muon);
+      
+    }
+    
+  }
+
+}
+  
+  CsHt::Muon candidateInput;
+  std::ifstream inputStream(outputPath.string(), std::ios::binary);
+  cereal::BinaryInputArchive inputArchive(inputStream);
+  
+  unsigned inputCounter{};
+  while(true){
+    
+    try{
+      
+      inputArchive(candidateInput);
+      ++inputCounter;
+      
+    }
+    catch(cereal::Exception& e){
+      
+      break;
+      
+    }
+    
+  }
+  std::cout<<"Read "<<inputCounter<<" events"<<std::endl;
   
 }
 
 int main(int argc, char* argv[]){
   
   unsigned runNumber;
-  boost::filesystem::path outputPath;
+  boost::filesystem::path targetPath, outputPath;
+  CsHt::MuonDefinition muonDefinition;
   
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
   ("help,h", "Display this help message")
   ("run,r", bpo::value<unsigned>(&runNumber)->required(), "Run number of the CT file to process")
-  ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees");
+  ("target,t", bpo::value<boost::filesystem::path>(&targetPath)->required(), "Directory of the data file")
+  ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees")
+  ("muon-IV-cut", bpo::value<float>(&muonDefinition.IVChargeThreshold)->required(), "Inner Veto charge threshold for muons (DUQ)")
+  ("factor-muon-energy-to-ID-charge,f", bpo::value<float>(&muonDefinition.energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)")
+  ("muon-energy-cut", bpo::value<float>(&muonDefinition.visibleEnergyThreshold)->required(), "Visible energy threshold for muons (MeV)");
 
   bpo::positional_options_description positionalOptions;//to use arguments without "--"
   positionalOptions.add("run", 1);
@@ -105,6 +162,12 @@ int main(int argc, char* argv[]){
     
   }
   
-  hunt(runNumber, outputPath);
+  if(!boost::filesystem::is_directory(targetPath)){
+      
+      std::cout<<"Error: '"<<targetPath<<"' is not a directory"<<std::endl;
+      return 1;
+      
+  }
+  else hunt(runNumber, targetPath, outputPath, muonDefinition);
   
 }
