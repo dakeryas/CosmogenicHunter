@@ -164,4 +164,11 @@ bool operator == (const CosmogenicHunter::Segment<T>& segment1, const Cosmogenic
   
 }
 
+template <class T>
+bool operator != (const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
+  
+  return !(segment1 == segment2);
+  
+}
+
 #endif

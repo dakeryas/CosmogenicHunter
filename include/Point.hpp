@@ -160,6 +160,11 @@ bool operator == (const CosmogenicHunter::Point<T>& point1, const CosmogenicHunt
   
 }
 
-
+template <class T>
+bool operator != (const CosmogenicHunter::Point<T>& point1, const CosmogenicHunter::Point<T>& point2){
+  
+  return !(point1 == point2);
+  
+}
 
 #endif
