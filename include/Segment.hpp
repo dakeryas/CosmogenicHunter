@@ -32,6 +32,7 @@ namespace CosmogenicHunter{
     bool isSmallerThan(T lenght) const;
     bool isSmallerThan(const Segment<T>& other) const;
     T getDistanceTo(const Point<T>& point) const;//get the shortest distance to the line defined by the segment
+    bool isEqualTo(const Segment<T>& other) const;//checks if the segments have the very same start and end points (not simply the lenght)
     
   };
   
@@ -125,6 +126,13 @@ namespace CosmogenicHunter{
 
   }
   
+  template <class T>
+  bool Segment<T>::isEqualTo(const Segment<T>& other) const{
+    
+    return startPoint == other.startPoint && endPoint == other.endPoint;
+    
+  }
+  
 }
 
 template <class T>
@@ -146,6 +154,13 @@ template <class T>
 bool operator>(const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
   
   return !(segment1 < segment2);
+  
+}
+
+template <class T>
+bool operator == (const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
+  
+  return segment1.isEqualTo(segment2);
   
 }
 
