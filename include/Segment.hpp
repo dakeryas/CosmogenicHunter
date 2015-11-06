@@ -133,6 +133,20 @@ namespace CosmogenicHunter{
     
   }
   
+  template <class T>
+  T getDistanceBetween(const Segment<T>& segment, const Point<T>& point){
+    
+    return segment.getDistanceTo(point);
+    
+  }
+  
+  template <class T>
+  T getDistanceBetween(const Point<T>& point, const Segment<T>& segment){
+    
+    return getDistanceBetween(segment, point);
+    
+  }
+  
 }
 
 template <class T>
