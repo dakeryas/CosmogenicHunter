@@ -5,6 +5,7 @@
 #include "Muon.hpp"
 #include "MuonCuts.hpp"
 #include "Neutron.hpp"
+#include "NeutronCuts.hpp"
 #include "Candidate.hpp"
 #include "Shower.hpp"
 
@@ -14,7 +15,7 @@ using MuonShower = CsHt::Shower<CsHt::Muon, CsHt::Neutron>;
 
 template <class T>
 void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const CsHt::MuonCuts<T>& muonCuts){
- 
+
   Message::SetLevelMSG(DC::kMERROR);
   
   EnDep::SetDirDataINPUT(targetPath.c_str());
