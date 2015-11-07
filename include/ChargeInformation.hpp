@@ -17,11 +17,6 @@ namespace CosmogenicHunter{
   public:
     ChargeInformation() = default;
     ChargeInformation(T RMS, T difference, T ratio, T startTimeRMS);
-    ChargeInformation(const ChargeInformation& other) = default;
-    ChargeInformation(ChargeInformation&& other) = default;
-    ChargeInformation& operator = (const ChargeInformation& other) = default;
-    ChargeInformation& operator = (ChargeInformation&& other) = default;
-    ~ChargeInformation() = default;
     T getRMS() const;
     T getDifference() const;
     T getRatio() const;
