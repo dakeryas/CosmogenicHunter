@@ -3,6 +3,7 @@
 #include "boost/program_options.hpp"
 #include "DCCalib-TypeDef.hh"
 #include "Muon.hpp"
+#include "MuonCuts.hpp"
 #include "Neutron.hpp"
 #include "Candidate.hpp"
 #include "Shower.hpp"
@@ -11,23 +12,9 @@ namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;
 using MuonShower = CsHt::Shower<CsHt::Muon, CsHt::Neutron>;
 
-namespace CosmogenicHunter {
-
-  struct MuonDefinition{
-    
-    float IVChargeThreshold, energyToIDChargeFactor, visibleEnergyThreshold;
-    float getIDChargeThreshold() const{ //to be used for mini data only
-      
-      return visibleEnergyThreshold * energyToIDChargeFactor;
-      
-    }
-    
-  };
-
-}
-
-void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const CsHt::MuonDefinition& muonDefinition){
-  
+template <class T>
+void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const CsHt::MuonCuts<T>& muonCuts){
+ 
   Message::SetLevelMSG(DC::kMERROR);
   
   EnDep::SetDirDataINPUT(targetPath.c_str());
@@ -63,7 +50,7 @@ void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const b
       float energy = Calib::GetME(energyDeposit.GetVldContext())->EvisID(numberOfPhotoElectrons, globalInfo->GetNGoodChID(), position.getR(), position.getZ(), DCSimFlag::kDATA, DC::kESv10);
       float chargeIV = globalInfo->GetChargeIV(DC::kCharge_AlgoMiniDATA);//we are looking for muons, so compare them with the mini data algorithm
       
-      if(energy > muonDefinition.visibleEnergyThreshold && chargeIV > muonDefinition.IVChargeThreshold){
+      if(muonCuts.accept(chargeIV, energy)){
 	
 	float chargeID = globalInfo->GetChargeID(DC::kCharge_AlgoMiniDATA);
 
@@ -88,8 +75,8 @@ void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const b
       CsHt::Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
       CsHt::Segment<float> track(entryPoint, exitPoint);
 
-      CsHt::Muon muon(triggerTime, chargeID / muonDefinition.energyToIDChargeFactor, identifier, chargeIV, chargeID, track);
-      if(entryPoint != CsHt::Point<float>(0,0,0) && chargeID > muonDefinition.getIDChargeThreshold()) outputArchive(muon);
+      CsHt::Muon muon(triggerTime, muonCuts.getEnergy(chargeID), identifier, chargeIV, chargeID, track);
+      if(entryPoint != CsHt::Point<float>(0,0,0) && muonCuts.accept(chargeID)) outputArchive(muon);
       
     }
     
@@ -103,7 +90,7 @@ int main(int argc, char* argv[]){
   
   unsigned runNumber;
   boost::filesystem::path targetPath, outputPath;
-  CsHt::MuonDefinition muonDefinition;
+  float IVChargeThreshold, visibleEnergyThreshold, energyToIDChargeFactor;
   
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
@@ -111,9 +98,9 @@ int main(int argc, char* argv[]){
   ("run,r", bpo::value<unsigned>(&runNumber)->required(), "Run number of the CT file to process")
   ("target,t", bpo::value<boost::filesystem::path>(&targetPath)->required(), "Directory of the data file")
   ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees")
-  ("muon-IV-cut", bpo::value<float>(&muonDefinition.IVChargeThreshold)->required(), "Inner Veto charge threshold for muons (DUQ)")
-  ("factor-muon-energy-to-ID-charge,f", bpo::value<float>(&muonDefinition.energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)")
-  ("muon-energy-cut", bpo::value<float>(&muonDefinition.visibleEnergyThreshold)->required(), "Visible energy threshold for muons (MeV)");
+  ("muon-IV-cut", bpo::value<float>(&IVChargeThreshold)->required(), "Inner Veto charge threshold for muons (DUQ)")
+  ("muon-energy-cut", bpo::value<float>(&visibleEnergyThreshold)->required(), "Visible energy threshold for muons (MeV)")
+  ("factor-muon-energy-to-ID-charge,f", bpo::value<float>(&energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)");
 
   bpo::positional_options_description positionalOptions;//to use arguments without "--"
   positionalOptions.add("run", 1);
@@ -146,6 +133,6 @@ int main(int argc, char* argv[]){
       return 1;
       
   }
-  else hunt(runNumber, targetPath, outputPath, muonDefinition);
+  else hunt(runNumber, targetPath, outputPath, CsHt::MuonCuts<float>(IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
   
 }
