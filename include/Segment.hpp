@@ -16,15 +16,15 @@ namespace CosmogenicHunter{
     
   public:
     Segment() = default;
-    Segment(const Point<T>& startPoint, const Point<T>& endPoint);
+    Segment(Point<T> startPoint, Point<T> endPoint);
     Segment(const Segment<T>& other) = default;
     Segment(Segment<T>&& other) = default;
     Segment<T>& operator = (const Segment<T>& other) = default;
     Segment<T>& operator = (Segment<T>&& other) = default;
     ~Segment() = default;
-    void setStartPoint(const Point<T>& startPoint);
-    void setEndPoint(const Point<T>& endPoint);
-    void setPoints(const Point<T>& startPoint, const Point<T>& endPoint);
+    void setStartPoint(Point<T> startPoint);
+    void setEndPoint(Point<T> endPoint);
+    void setPoints(Point<T> startPoint, Point<T> endPoint);
     const Point<T>& getStartPoint() const;
     const Point<T>& getEndPoint() const;
     T getLenght() const;
@@ -45,26 +45,26 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
-  Segment<T>::Segment(const Point<T>& startPoint, const Point<T>& endPoint):startPoint(startPoint),endPoint(endPoint){
+  Segment<T>::Segment(Point<T> startPoint, Point<T> endPoint):startPoint(startPoint),endPoint(endPoint){
     
   }
   
   template <class T>
-  void Segment<T>::setStartPoint(const Point<T>& startPoint){
+  void Segment<T>::setStartPoint(Point<T> startPoint){
     
     this->startPoint = startPoint;
 
   }
 
   template <class T>
-  void Segment<T>::setEndPoint(const Point<T>& endPoint){
+  void Segment<T>::setEndPoint(Point<T> endPoint){
     
     this->endPoint = endPoint;
 
   }
   
   template <class T>
-  void Segment<T>::setPoints(const Point<T>& startPoint, const Point<T>& endPoint){
+  void Segment<T>::setPoints(Point<T> startPoint, Point<T> endPoint){
     
     setStartPoint(startPoint);
     setEndPoint(endPoint);
