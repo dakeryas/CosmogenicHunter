@@ -31,7 +31,6 @@ namespace CosmogenicHunter{
     void setIDChargeThreshold(T IDChargeThreshold);
     void setIDChargeToEnergyFactor(T IDChargeToEnergyFactor);
     bool accept(T IVCharge, T energy) const;
-    bool accept(T IDCharge) const;
     T getEnergy(T IDCharge) const;
     T getIDCharge(T energy) const;
     
@@ -139,13 +138,6 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  bool MuonCuts<T>::accept(T IDCharge) const{
-
-    return IDCharge > IDChargeThreshold;
-
-  }
-
-  template <class T>
   T MuonCuts<T>::getEnergy(T IDCharge) const{
 
     return IDCharge * IDChargeToEnergyFactor;
@@ -168,7 +160,7 @@ std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::MuonCuts<
       <<std::setw(26)<<std::left<<"Energy threshold"<<": "<<std::setw(6)<<std::left<<muonCuts.getEnergyThreshold()<<"\n"
       <<std::setw(26)<<std::left<<"Energy to ID charge factor"<<": "<<std::setw(6)<<std::left<<muonCuts.getEnergyToIDChargeFactor()<<"\n"
       <<std::setw(26)<<std::left<<"ID charge threshold"<<": "<<std::setw(6)<<std::left<<muonCuts.getIDChargeThreshold()<<"\n"
-      <<std::setw(26)<<std::left<<"ID charge to energy factor"<<": "<<std::setw(6)<<std::left<<muonCuts.getIDChargeToEnergyFactor()<<"\n";
+      <<std::setw(26)<<std::left<<"ID charge to energy factor"<<": "<<std::setw(6)<<std::left<<muonCuts.getIDChargeToEnergyFactor();
   return output;
   
 }

@@ -69,7 +69,7 @@ template <class T>
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::NeutronCuts<T>& neutronCuts){
   
   output<<std::setw(16)<<std::left<<"Energy lower cut"<<": "<<std::setw(6)<<std::left<<neutronCuts.getEnergyLowCut()<<"\n"
-      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(6)<<std::left<<neutronCuts.getEnergyUpCut()<<"\n";
+      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(6)<<std::left<<neutronCuts.getEnergyUpCut();
   return output;
   
 }
