@@ -9,6 +9,7 @@ namespace CosmogenicHunter{
   class Event{
     
     double triggerTime;
+    float vetoCharge;//IV charge
     float visibleEnergy;
     unsigned identifier;
     friend class cereal::access;
@@ -17,13 +18,14 @@ namespace CosmogenicHunter{
 
   public:
     Event() = default;
-    Event(double triggerTime, float visibleEnergy, unsigned identifier);
+    Event(double triggerTime, float vetoCharge, float visibleEnergy, unsigned identifier);
     Event(const Event& other) = default;
     Event(Event&& other) = default;
     Event& operator = (const Event& other) = default;
     Event& operator = (Event&& other) = default;
     virtual ~Event() = default;//custom destructor implies to define (even if default-ed) all copy / move / assignement operations
     double getTriggerTime() const;
+    float getVetoCharge() const;
     float getVisibleEnergy() const;
     unsigned getIdentifier() const;//identifier of the event within the corresponding run
     virtual void print(std::ostream& output, unsigned outputOffset) const;//needed to act as if 'operator<<' was virtual
@@ -34,7 +36,7 @@ namespace CosmogenicHunter{
   template <class Archive>
   void Event::serialize(Archive& archive){
     
-    archive(triggerTime, visibleEnergy, identifier);
+    archive(triggerTime, vetoCharge, visibleEnergy, identifier);
 
   }
 

@@ -8,20 +8,17 @@ namespace CosmogenicHunter{
 
   class Muon : public Event{
     
-    float vetoCharge;
-    float detectorCharge;
     Segment<float> track;
+    float detectorCharge;
     friend class cereal::access;
     template <class Archive>
     void serialize(Archive& archive);
     
   public:
     Muon() = default;
-    Muon(Event event, float vetoCharge, float detectorCharge, Segment<float> track);
-    Muon(double triggerTime, float visibleEnergy, unsigned identifier, float vetoCharge, float detectorCharge, Segment<float> track);
-    float getVetoCharge() const;
-    float getDetectorCharge() const;
+    Muon(double triggerTime, float vetoCharge, float visibleEnergy, unsigned identifier, Segment<float> track, float detectorCharge);
     const Segment<float>& getTrack() const;
+    float getDetectorCharge() const;
     void print(std::ostream& output, unsigned outputOffset) const;
     
   };
@@ -29,7 +26,7 @@ namespace CosmogenicHunter{
   template <class Archive>
   void Muon::serialize(Archive& archive){
     
-    archive(cereal::base_class<Event>(this), vetoCharge, detectorCharge, track);
+    archive(cereal::base_class<Event>(this), track, detectorCharge);
 
   }
 

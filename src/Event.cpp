@@ -16,13 +16,19 @@ bool operator==(const CosmogenicHunter::Event& event1, const CosmogenicHunter::E
 
 namespace CosmogenicHunter{
 
-  Event::Event(double triggerTime, float visibleEnergy, unsigned identifier):triggerTime(triggerTime),visibleEnergy(visibleEnergy),identifier(identifier){
+  Event::Event(double triggerTime, float vetoCharge, float visibleEnergy, unsigned identifier):triggerTime(triggerTime),vetoCharge(vetoCharge),visibleEnergy(visibleEnergy),identifier(identifier){
     
   }
 
   double Event::getTriggerTime() const{
     
     return triggerTime;
+
+  }
+  
+  float Event::getVetoCharge() const{
+    
+    return vetoCharge;
 
   }
 
@@ -41,6 +47,7 @@ namespace CosmogenicHunter{
   void Event::print(std::ostream& output, unsigned outputOffset) const{
 
     output<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Trigger time"<<": "<<std::setw(6)<<std::left<<triggerTime
+      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"IV charge"<<": "<<std::setw(6)<<std::left<<vetoCharge
       <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Energy"<<": "<<std::setw(3)<<std::left<<visibleEnergy
       <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Identifier"<<": "<<std::setw(8)<<std::left<<identifier;
     

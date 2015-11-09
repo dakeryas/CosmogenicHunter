@@ -8,14 +8,9 @@ std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Candidate
 }
 
 namespace CosmogenicHunter{
-
-  Candidate::Candidate(Event event, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation)
-  :Event(event), position(position),reconstructionGoodness(reconstructionGoodness),chargeInformation(chargeInformation){
-    
-  }
   
-  Candidate::Candidate(double triggerTime, float visibleEnergy, unsigned identifier, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation)
-  :Event(triggerTime, visibleEnergy, identifier), position(position),reconstructionGoodness(reconstructionGoodness),chargeInformation(chargeInformation){
+  Candidate::Candidate(double triggerTime, float vetoCharge, float visibleEnergy, unsigned identifier, Point<float> position, float reconstructionGoodness, ChargeInformation<float> chargeInformation)
+  :Event(triggerTime, vetoCharge, visibleEnergy, identifier), position(std::move(position)),reconstructionGoodness(reconstructionGoodness),chargeInformation(std::move(chargeInformation)){
     
   }
 

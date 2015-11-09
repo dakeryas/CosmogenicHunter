@@ -45,29 +45,29 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
-  Segment<T>::Segment(Point<T> startPoint, Point<T> endPoint):startPoint(startPoint),endPoint(endPoint){
+  Segment<T>::Segment(Point<T> startPoint, Point<T> endPoint):startPoint(std::move(startPoint)),endPoint(std::move(endPoint)){
     
   }
   
   template <class T>
   void Segment<T>::setStartPoint(Point<T> startPoint){
     
-    this->startPoint = startPoint;
+    this->startPoint = std::move(startPoint);
 
   }
 
   template <class T>
   void Segment<T>::setEndPoint(Point<T> endPoint){
     
-    this->endPoint = endPoint;
+    this->endPoint = std::move(endPoint);
 
   }
   
   template <class T>
   void Segment<T>::setPoints(Point<T> startPoint, Point<T> endPoint){
     
-    setStartPoint(startPoint);
-    setEndPoint(endPoint);
+    setStartPoint(std::move(startPoint));
+    setEndPoint(std::move(endPoint));
 
   }
 

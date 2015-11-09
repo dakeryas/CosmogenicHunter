@@ -9,12 +9,9 @@ std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Neutron& 
 }
 
 namespace CosmogenicHunter{
-
-  Neutron::Neutron(Event event, Point<float> position):Event(event), position(position){
-    
-  }
   
-  Neutron::Neutron(double triggerTime, float visibleEnergy, unsigned identifier, Point<float> position):Neutron(Event(triggerTime, visibleEnergy, identifier), position){
+  Neutron::Neutron(double triggerTime, float vetoCharge, float visibleEnergy, unsigned identifier, Point<float> position)
+  :Event(triggerTime, vetoCharge, visibleEnergy, identifier), position(std::move(position)){
     
   }
 

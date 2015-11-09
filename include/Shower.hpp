@@ -45,7 +45,7 @@ namespace CosmogenicHunter{
   }
   
   template <class Initiator, class Follower>
-  Shower<Initiator, Follower>::Shower(Initiator initiator, double maximumDuration):initiator(initiator), followerWindow(initiator.getTriggerTime(), maximumDuration){
+  Shower<Initiator, Follower>::Shower(Initiator initiator, double maximumDuration):initiator(std::move(initiator)), followerWindow(initiator.getTriggerTime(), maximumDuration){
     
   }
 
