@@ -1,12 +1,12 @@
 #ifndef NEUTRON_CUTS_H
 #define NEUTRON_CUTS_H
 
-#include <iomanip>
+#include "Cuts.hpp"
 
 namespace CosmogenicHunter{
 
   template <class T>
-  class NeutronCuts{
+  class NeutronCuts: public Cuts<T>{
     
     T energyLowCut;//visible ID energy threshold
     T energyUpCut;//maximum value for the visible energy
@@ -18,7 +18,7 @@ namespace CosmogenicHunter{
     T getEnergyUpCut() const;
     void setEnergyLowCut(T energyLowCut);
     void setEnergyUpCut(T energyUpCut);
-    bool accept(T energy) const;
+    bool accept(const Entry<T>& entry) const;
     
   };
   
@@ -57,9 +57,9 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  bool NeutronCuts<T>::accept(T energy) const{
+  bool NeutronCuts<T>::accept(const Entry<T>& entry) const{
 
-    return energy > energyLowCut && energy < energyUpCut;
+    return entry.energy > energyLowCut && entry.energy < energyUpCut;
 
   }
   

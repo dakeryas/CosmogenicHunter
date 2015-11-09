@@ -1,12 +1,12 @@
 #ifndef MUON_CUTS_H
 #define MUON_CUTS_H
 
-#include <iomanip>
+#include "Cuts.hpp"
 
 namespace CosmogenicHunter{
 
   template <class T>
-  class MuonCuts{
+  class MuonCuts: public Cuts<T>{
     
     T IVChargeThreshold;//lower cut on the IV charge
     T energyThreshold;//visible ID energy
@@ -30,7 +30,7 @@ namespace CosmogenicHunter{
     void setEnergyThreshold(T energyThreshold);
     void setIDChargeThreshold(T IDChargeThreshold);
     void setIDChargeToEnergyFactor(T IDChargeToEnergyFactor);
-    bool accept(T IVCharge, T energy) const;
+    bool accept(const Entry<T>& entry) const;
     T getEnergy(T IDCharge) const;
     T getIDCharge(T energy) const;
     
@@ -131,9 +131,9 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  bool MuonCuts<T>::accept(T IVCharge, T energy) const{
+  bool MuonCuts<T>::accept(const Entry<T>& entry) const{
 
-    return IVCharge > IVChargeThreshold && energy > energyThreshold;
+    return entry.IVCharge > IVChargeThreshold && entry.energy > energyThreshold;
 
   }
   
