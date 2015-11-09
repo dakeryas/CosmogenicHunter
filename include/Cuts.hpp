@@ -4,28 +4,6 @@
 #include <iomanip>
 
 namespace CosmogenicHunter{
-  
-  template <class T>
-  struct Entry{
-    
-    T IVCharge;
-    T energy;
-    unsigned identifier;
-    Entry(T IVCharge, T energy, unsigned identifier):IVCharge(IVCharge),energy(energy),identifier(identifier){}
-    
-  };
-  
-  template <class T>
-  std::ostream& operator<<(std::ostream& output, const Entry<T>& entry){
-      
-    output<<std::setw(12)<<std::left<<entry.IVCharge<<"  "<<std::setw(8)<<std::left<<entry.energy<<"  "<<std::setw(8)<<std::left<<entry.identifier;
-    return output;
-      
-  };
-  
-}
-
-namespace CosmogenicHunter{
 
   template <class T>//to accept entries saved with the accuracy of type T
   class Cuts{
