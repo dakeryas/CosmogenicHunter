@@ -18,7 +18,7 @@ namespace CosmogenicHunter{
   template <class T>
   std::ostream& operator<<(std::ostream& output, const Entry<T>& entry){
       
-    output<<std::setw(6)<<std::left<<entry.IVCharge<<"  "<<std::setw(6)<<std::left<<entry.energy<<"  "<<std::setw(8)<<std::left<<entry.identifier;
+    output<<std::setw(12)<<std::left<<entry.IVCharge<<"  "<<std::setw(8)<<std::left<<entry.energy<<"  "<<std::setw(8)<<std::left<<entry.identifier;
     return output;
       
   };
