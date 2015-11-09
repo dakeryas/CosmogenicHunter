@@ -4,8 +4,12 @@
 #include <map>
 #include <iostream>
 
-enum class Flavour{Muon, Neutron, Candidate, Other};
+namespace CosmogenicHunter{
 
-std::ostream& operator<<(std::ostream& output, Flavour flavour);
+  enum class Flavour{Muon, Neutron, Candidate, Other};
+  
+}
+
+std::ostream& operator<<(std::ostream& output, CosmogenicHunter::Flavour flavour);
 
 #endif

@@ -1,10 +1,14 @@
 #include "Flavour.hpp"
 
-std::map <Flavour, std::string> flavourMap = {{Flavour::Muon, "Muon"}, {Flavour::Neutron, "Neutron"}, {Flavour::Candidate, "Candidate"}, {Flavour::Other, "Other"}};
+namespace CosmogenicHunter{
 
-std::ostream& operator<<(std::ostream& output, Flavour flavour){
+  std::map <Flavour, std::string> flavourMap = {{Flavour::Muon, "Muon"}, {Flavour::Neutron, "Neutron"}, {Flavour::Candidate, "Candidate"}, {Flavour::Other, "Other"}};
+
+}
+
+std::ostream& operator<<(std::ostream& output, CosmogenicHunter::Flavour flavour){
   
-  output<<flavourMap[flavour];
+  output<<CosmogenicHunter::flavourMap[flavour];
   return output;
 
 }
