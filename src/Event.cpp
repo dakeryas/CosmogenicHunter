@@ -32,10 +32,10 @@ namespace CosmogenicHunter{
   
   void Event::print(std::ostream& output, unsigned outputOffset) const{
 
-    output<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Trigger time"<<": "<<std::setw(6)<<std::left<<triggerTime
-      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"IV charge"<<": "<<std::setw(6)<<std::left<<vetoCharge
-      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Energy"<<": "<<std::setw(3)<<std::left<<visibleEnergy
-      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Identifier"<<": "<<std::setw(8)<<std::left<<identifier;
+    output<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Trigger time"<<": "<<std::setw(14)<<std::left<<triggerTime
+      <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"IV charge"<<": "<<std::setw(6)<<std::left<<vetoCharge
+      <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Energy"<<": "<<std::setw(3)<<std::left<<visibleEnergy
+      <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Identifier"<<": "<<std::setw(8)<<std::left<<identifier;
     
   }
   

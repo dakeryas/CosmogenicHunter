@@ -73,7 +73,7 @@ namespace CosmogenicHunter{
   template <class Initiator, class Follower>
   template <class... Args>
   void Shower<Initiator, Follower>::emplaceFollower(Args&&... args){
-    
+
     followerWindow.emplaceEvent(std::forward<Args>(args)...);
 
   }
@@ -97,8 +97,13 @@ namespace CosmogenicHunter{
 
     output<<std::setw(outputOffset)<<std::left<<""<<std::setw(9)<<std::left<<"Initiator"<<":\n";
     initiator.print(output, outputOffset + 3);//offset the initiator by 3 spaces
-    output<<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(10)<<std::left<<"Followers"<<":\n";
-    followerWindow.print(output, outputOffset + 3);
+    
+    if(!followerWindow.isEmpty()){
+      
+      output<<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(10)<<std::left<<"Followers"<<":\n";
+      followerWindow.print(output, outputOffset + 3);
+      
+    }
     
   }
   
