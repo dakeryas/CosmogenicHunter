@@ -30,8 +30,8 @@ namespace CosmogenicHunter{
   void Muon::print(std::ostream& output, unsigned outputOffset) const{
     
     Event::print(output, outputOffset);//print the base class
-    output<<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Track"<<": "<<track
-      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"ID Charge"<<": "<<std::setw(6)<<std::left<<detectorCharge;
+    output<<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Track"<<": "<<track
+      <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"ID Charge"<<": "<<std::setw(6)<<std::left<<detectorCharge;
 
   }
 

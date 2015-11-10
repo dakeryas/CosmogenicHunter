@@ -35,9 +35,9 @@ namespace CosmogenicHunter{
   void Candidate::print(std::ostream& output, unsigned outputOffset) const{
     
     Event::print(output, outputOffset);//print the base class
-    output<<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Position"<<": "<<position
-      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Goodness"<<": "<<reconstructionGoodness
-      <<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Charge"<<":\n";
+    output<<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Position"<<": "<<position
+      <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Goodness"<<": "<<reconstructionGoodness
+      <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Charge"<<":\n";
     chargeInformation.print(output, outputOffset + 3);  
 
   }

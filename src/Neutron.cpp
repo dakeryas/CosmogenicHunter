@@ -24,7 +24,7 @@ namespace CosmogenicHunter{
   void Neutron::print(std::ostream& output, unsigned outputOffset) const{
     
     Event::print(output, outputOffset);//print the base class
-    output<<"\n"<<std::setw(outputOffset)<<std::left<<" "<<std::setw(12)<<std::left<<"Position"<<": "<<position;
+    output<<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Position"<<": "<<position;
 
   }
 
