@@ -29,7 +29,7 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
-  void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const CsHt::EntrySorter<T>& entrySorter){
+  void hunt(unsigned runNumber, const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const EntrySorter<T>& entrySorter, double muonWindowLenght, double neutronWindowLenght){
 
     Message::SetLevelMSG(DC::kMERROR);
     
@@ -51,6 +51,8 @@ namespace CosmogenicHunter{
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
     cereal::BinaryOutputArchive outputArchive(outputStream);
 
+    Window<MuonShower> muonShowerWindow(0, muonWindowLenght);
+
     while(energyDeposit.Next()){
       
       globalInfo = energyDeposit.GetGlobalInfo();
@@ -62,26 +64,34 @@ namespace CosmogenicHunter{
       float chargeID = globalInfo->GetChargeID(DC::kCharge_AlgoMiniDATA);
       
       recoBAMAInfo = energyDeposit.GetRecoBAMAInfo();
-      CsHt::Point<float> position(recoBAMAInfo->GetRecoX()[0], recoBAMAInfo->GetRecoX()[1], recoBAMAInfo->GetRecoX()[2]);
+      Point<float> position(recoBAMAInfo->GetRecoX()[0], recoBAMAInfo->GetRecoX()[1], recoBAMAInfo->GetRecoX()[2]);
       float energy = Calib::GetME(energyDeposit.GetVldContext())->EvisID(numberOfPhotoElectrons, globalInfo->GetNGoodChID(), position.getR(), position.getZ(), DCSimFlag::kDATA, DC::kESv10);
 
-      CsHt::Entry<float> entry(chargeIV, chargeID, energy, identifier);
+      Entry<float> entry(chargeIV, chargeID, energy, identifier);
       auto flavour = entrySorter.getFlavour(entry);
       
-      if(flavour == CsHt::Flavour::Muon){
+      muonShowerWindow.setEndTime(triggerTime + 1);
+
+      if(flavour == Flavour::Muon){
 	
 	recoMuHamInfo = energyDeposit.GetRecoMuHamIDInfo();
-	CsHt::Point<float> entryPoint(recoMuHamInfo->GetEntryID()[0], recoMuHamInfo->GetEntryID()[1], recoMuHamInfo->GetEntryID()[2]);
-	CsHt::Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
-	CsHt::Segment<float> track(entryPoint, exitPoint);
+	Point<float> entryPoint(recoMuHamInfo->GetEntryID()[0], recoMuHamInfo->GetEntryID()[1], recoMuHamInfo->GetEntryID()[2]);
+	Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
+	Segment<float> track(entryPoint, exitPoint);
 	
-	if(entryPoint != CsHt::Point<float>(0,0,0)){
+	if(entryPoint != Point<float>(0,0,0)){
 
-	  CsHt::Muon muon(triggerTime, chargeIV, energy, identifier, track, chargeID);
-	  outputArchive(muon);
+	  Muon muon(triggerTime, chargeIV, energy, identifier, track, chargeID);
+	  muonShowerWindow.emplaceEvent(muon, neutronWindowLenght);
 
 	}
       
+      }
+      else if(flavour == Flavour::Candidate && triggerTime > muonWindowLenght) outputArchive(muonShowerWindow);//we cannot save candidate trees too early in the run
+      else if(flavour == Flavour::Neutron){
+	
+	for(auto& muonShower : muonShowerWindow) muonShower.emplaceFollower(triggerTime, chargeIV, energy, identifier, position);
+	
       }
       
     }
@@ -94,7 +104,9 @@ int main(int argc, char* argv[]){
  
   unsigned runNumber;
   boost::filesystem::path targetPath, mapPath, outputPath;
+  double muonWindowLenght;
   float IVChargeThreshold, visibleEnergyThreshold, energyToIDChargeFactor;
+  double neutronWindowLenght;
   std::vector<float> neutronEnergyBounds(2);
   float candidateIVChargeUpCut;
   
@@ -105,9 +117,11 @@ int main(int argc, char* argv[]){
   ("target,t", bpo::value<boost::filesystem::path>(&targetPath)->required(), "Directory of the file")
   ("map,m", bpo::value<boost::filesystem::path>(&mapPath)->required(), "Path of the binary map of candidates")
   ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees")
+  ("muon-window-lenght", bpo::value<double>(&muonWindowLenght)->required(), "Muon window lenght (ns)")
   ("muon-IV-cut", bpo::value<float>(&IVChargeThreshold)->required(), "Inner Veto charge threshold for muons (DUQ)")
   ("muon-energy-cut", bpo::value<float>(&visibleEnergyThreshold)->required(), "Visible energy threshold for muons (MeV)")
   ("factor-muon-energy-to-ID-charge,f", bpo::value<float>(&energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)")
+  ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
   ("neutron-energy-bounds", bpo::value<std::vector<float>>(&neutronEnergyBounds)->multitoken()->required(), "Bounds on the neutron's energy (MeV)")
   ("candidate-IV-up-cut", bpo::value<float>(&candidateIVChargeUpCut)->required(), "Upper cut on the candidate's Inner Veto charge (DUQ)");
 
@@ -167,7 +181,7 @@ int main(int argc, char* argv[]){
     CsHt::NeutronCuts<float> neutronCuts(neutronEnergyBounds[0], neutronEnergyBounds[1]);
     CsHt::CandidateCuts<float> candidateCuts(candidateIVChargeUpCut, candidateIdentifiers);
     CsHt::EntrySorter<float> entrySorter(muonCuts, neutronCuts, candidateCuts);
-    CsHt::hunt(runNumber, targetPath, outputPath, entrySorter);
+    CsHt::hunt(runNumber, targetPath, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
     
   }
   
