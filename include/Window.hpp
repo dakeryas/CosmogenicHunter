@@ -17,11 +17,14 @@ namespace CosmogenicHunter{
     friend class cereal::access;
     template <class Archive>
     void serialize(Archive& archive);
+    void eraseTooYoung(double startTime);
+    void eraseTooOld(double startTime, double lenght);
     
   public:
     Window() = default;
     Window(double startTime, double lenght);
     double getStartTime() const;
+    double getEndTime() const;
     double getLenght() const;
     unsigned getNumberOfEvents() const;
     typename std::deque<T>::const_iterator begin() const;
@@ -31,7 +34,7 @@ namespace CosmogenicHunter{
     void setStartTime(double startTime);
     void setLenght(double lenght);
     void setEndTime(double endTime);
-    bool covers(double triggerTime) const;//check if the trigger is within the time window
+    bool covers(double triggerTime) const;//check if the trigger is within the time window (accept events in [startTime, startTime + lenght[ )
     template <class K>
     bool covers(const K& event) const;//check if the event is within the time window (event need not be of the same 'event type' as the ones stored in the window)
     bool isEmpty() const;
@@ -55,6 +58,22 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
+  void Window<T>::eraseTooYoung(double startTime){
+    
+    auto itFirstValid = std::find_if(events.begin(), events.end(), [&](const auto& event){return event.getTriggerTime() >= startTime;});
+    events.erase(events.begin(), itFirstValid);
+    
+  }
+  
+  template <class T>
+  void Window<T>::eraseTooOld(double startTime, double lenght){
+    
+    auto itFirstOld = std::find_if(events.begin(), events.end(), [&](const auto& event){return event.getTriggerTime() >= startTime + lenght;});
+    events.erase(itFirstOld, events.end());
+    
+  }
+  
+  template <class T>
   Window<T>::Window(double startTime, double lenght):startTime(startTime),lenght(std::abs(lenght)){
     
   }
@@ -63,6 +82,13 @@ namespace CosmogenicHunter{
   double Window<T>::getStartTime() const{
     
     return startTime;
+
+  }
+  
+  template <class T>
+  double Window<T>::getEndTime() const{
+    
+    return startTime + lenght;
 
   }
 
@@ -111,8 +137,9 @@ namespace CosmogenicHunter{
   template <class T>
   void Window<T>::setStartTime(double startTime){
     
-    if(startTime - this->startTime >= lenght) events.clear();
-    else if(startTime - this->startTime < lenght) events.erase(events.begin(), std::find_if(events.begin(), events.end(), [&](const auto& event){return event.getTriggerTime() >= startTime;}));
+    if(startTime >= getEndTime()) events.clear();
+    else if(startTime < getEndTime() && startTime >= this->startTime) eraseTooYoung(startTime);
+    else if(startTime < this->startTime) eraseTooOld(startTime, lenght);
     
     this->startTime = startTime;
 
@@ -123,7 +150,7 @@ namespace CosmogenicHunter{
     
     if(lenght > 0){
     
-      if(lenght < this->lenght) events.erase(std::find_if(events.begin(), events.end(), [&](const auto& event){return event.getTriggerTime() >= startTime + lenght;}), events.end());
+      if(lenght < this->lenght) eraseTooOld(startTime, lenght);
       this->lenght = lenght;
       
     }
