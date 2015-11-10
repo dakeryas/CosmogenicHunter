@@ -26,6 +26,8 @@ namespace CosmogenicHunter{
     unsigned getNumberOfEvents() const;
     typename std::deque<T>::const_iterator begin() const;
     typename std::deque<T>::const_iterator end() const;
+    typename std::deque<T>::iterator begin();
+    typename std::deque<T>::iterator end();
     void setStartTime(double startTime);
     void setLenght(double lenght);
     void setEndTime(double endTime);
@@ -40,6 +42,7 @@ namespace CosmogenicHunter{
     void pushBackEvent(const T& event);//push back the event if it is within the window
     void pushBackEvent(T&& event);//'T&&' is not a 'universal reference' since T has been deduced already at the instantation of Window<T>, so 'T&&' can only bind to rvalue references and not lvalues
     void clear();//clear all events
+    void print(std::ostream& output, unsigned outputOffset) const;
     
   };
   
@@ -92,6 +95,20 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
+  typename std::deque<T>::iterator Window<T>::begin(){
+
+    return events.begin();
+    
+  }
+
+  template <class T>
+  typename std::deque<T>::iterator Window<T>::end(){
+
+    return events.end();
+    
+  }
+  
+  template <class T>
   void Window<T>::setStartTime(double startTime){
     
     if(startTime - this->startTime >= lenght) events.clear();
@@ -122,7 +139,7 @@ namespace CosmogenicHunter{
 
   template <class T>
   bool Window<T>::covers(double triggerTime) const{
-    
+
     return triggerTime >= startTime && triggerTime < startTime + lenght;
 
   }
@@ -130,7 +147,7 @@ namespace CosmogenicHunter{
   template <class T>
   template <class K>
   bool Window<T>::covers(const K& event) const{
-    
+
     return covers(event.getTriggerTime());
 
   }
@@ -149,11 +166,11 @@ namespace CosmogenicHunter{
     if(covers(triggerTime)) events.emplace_back(triggerTime, std::forward<Args>(args)...);
 
   }
-  
+
   template <class T>
   template <class BaseClass, class... Args>
   void Window<T>::emplaceEvent(BaseClass eventBase, Args&&... args){
-    
+
     if(covers(eventBase)) events.emplace_back(eventBase, std::forward<Args>(args)...);
 
   }
@@ -178,6 +195,23 @@ namespace CosmogenicHunter{
     events.clear();
 
   }
+  
+  template <class T>
+  void Window<T>::print(std::ostream& output, unsigned outputOffset) const{
+    
+    output<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Start time: "<<std::setw(8)<<std::left<<startTime
+      <<std::setw(8)<<std::left<<" Lenght: "<<std::setw(8)<<std::left<<lenght
+      <<std::setw(14)<<std::left<<"Number of events: "<<std::setw(8)<<std::left<<getNumberOfEvents();
+    
+    if(!isEmpty())
+    for(const auto& event : events){
+      
+      output<<"\n";
+      event.print(output, outputOffset + 3);//offset all events by 3 spaces
+      
+    }
+    
+  }
 
 }
 
@@ -198,17 +232,7 @@ std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Shower<In
 template <class T>
 std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Window<T>& window){
   
-  output<<std::setw(12)<<std::left<<"Start time: "<<std::setw(8)<<std::left<<window.getStartTime()<<std::setw(8)<<std::left<<" Lenght: "<<std::setw(8)<<std::left<<window.getLenght()
-    <<std::setw(14)<<std::left<<"Number of events: "<<std::setw(8)<<std::left<<window.getNumberOfEvents();
-    
-  if(!window.isEmpty())
-    for(const auto& event : window){
-      
-      output<<"\n";
-      event.print(output, 3);//offset all events by 3 spaces
-      
-    }
-      
+  window.print(output, 0);
   return output;
   
 }
