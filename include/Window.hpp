@@ -213,28 +213,14 @@ namespace CosmogenicHunter{
     
   }
 
-}
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const Window<T>& window){
+    
+    window.print(output, 0);
+    return output;
+    
+  }
 
-// Foward declaration of operator<< for Shower otherwise Window cannot print Shower's
-
-namespace CosmogenicHunter{
-  
-  template <class Initiator, class Follower>
-  class Shower;
-  
-}
-
-template <class Initiator, class Follower>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Shower<Initiator,Follower>& shower);
-
-//Declaration end
-
-template <class T>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Window<T>& window){
-  
-  window.print(output, 0);
-  return output;
-  
 }
 
 #endif

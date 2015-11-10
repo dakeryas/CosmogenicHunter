@@ -1,13 +1,5 @@
 #include "Muon.hpp"
 
-
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Muon& muon){
-  
-  muon.print(output, 0);
-  return output;
-  
-}
-
 namespace CosmogenicHunter{
   
   Muon::Muon(double triggerTime, float vetoCharge, float visibleEnergy, unsigned identifier, Segment<float> track, float detectorCharge)
@@ -33,6 +25,13 @@ namespace CosmogenicHunter{
     output<<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"Track"<<": "<<track
       <<"\n"<<std::setw(outputOffset)<<std::left<<""<<std::setw(12)<<std::left<<"ID Charge"<<": "<<std::setw(6)<<std::left<<detectorCharge;
 
+  }
+
+  std::ostream& operator<<(std::ostream& output, const Muon& muon){
+    
+    muon.print(output, 0);
+    return output;
+    
   }
 
 }

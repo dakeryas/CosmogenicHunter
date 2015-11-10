@@ -63,15 +63,15 @@ namespace CosmogenicHunter{
 
   }
   
-}
-
-template <class T>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::CandidateCuts<T>& candidateCuts){
-  
-  output<<std::setw(14)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::left<<candidateCuts.getIVChargeUpCut()<<"\n"
-    <<std::setw(14)<<std::left<<"Candidate ID's"<<": ";
-  for(auto identifier : candidateCuts.getCandidateIdentifiers()) output<<"\n"<<identifier;
-  return output;
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const CandidateCuts<T>& candidateCuts){
+    
+    output<<std::setw(14)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::left<<candidateCuts.getIVChargeUpCut()<<"\n"
+      <<std::setw(14)<<std::left<<"Candidate ID's"<<": ";
+    for(auto identifier : candidateCuts.getCandidateIdentifiers()) output<<"\n"<<identifier;
+    return output;
+    
+  }
   
 }
 

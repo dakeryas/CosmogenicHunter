@@ -86,18 +86,18 @@ namespace CosmogenicHunter{
     else return Flavour::Other;
 
   }
-  
-}
 
-template <class T>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::EntrySorter<T>& entrySorter){
-  
-  output<<std::setw(14)<<std::left<<"Muon cuts"<<":\n"<<entrySorter.getMuonCuts()<<"\n"
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const EntrySorter<T>& entrySorter){
+    
+    output<<std::setw(14)<<std::left<<"Muon cuts"<<":\n"<<entrySorter.getMuonCuts()<<"\n"
       <<std::setw(14)<<std::left<<"Neutron cuts"<<":\n"<<entrySorter.getNeutronCuts()<<"\n"
       <<std::setw(14)<<std::left<<"Candidate cuts"<<":\n"<<entrySorter.getCandidateCuts();
-  
-  
-  return output;
+    
+    
+    return output;
+    
+  }
   
 }
 

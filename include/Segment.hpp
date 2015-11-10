@@ -147,41 +147,41 @@ namespace CosmogenicHunter{
     
   }
   
-}
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const Segment<T>& segment){
+    
+    output<<"["<<segment.getStartPoint()<<", "<<segment.getEndPoint()<<"]";
+    return output;
+    
+  }
 
-template <class T>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Segment<T>& segment){
-  
-  output<<"["<<segment.getStartPoint()<<", "<<segment.getEndPoint()<<"]";
-  return output;
-  
-}
+  template <class T>
+  bool operator<(const Segment<T>& segment1, const Segment<T>& segment2){
+    
+    return segment1.isSmallerThan(segment2);
+    
+  }
 
-template <class T>
-bool operator<(const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
-  
-  return segment1.isSmallerThan(segment2);
-  
-}
+  template <class T>
+  bool operator>(const Segment<T>& segment1, const Segment<T>& segment2){
+    
+    return !(segment1 < segment2);
+    
+  }
 
-template <class T>
-bool operator>(const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
-  
-  return !(segment1 < segment2);
-  
-}
+  template <class T>
+  bool operator == (const Segment<T>& segment1, const Segment<T>& segment2){
+    
+    return segment1.isEqualTo(segment2);
+    
+  }
 
-template <class T>
-bool operator == (const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
-  
-  return segment1.isEqualTo(segment2);
-  
-}
-
-template <class T>
-bool operator != (const CosmogenicHunter::Segment<T>& segment1, const CosmogenicHunter::Segment<T>& segment2){
-  
-  return !(segment1 == segment2);
+  template <class T>
+  bool operator != (const Segment<T>& segment1, const Segment<T>& segment2){
+    
+    return !(segment1 == segment2);
+    
+  }
   
 }
 

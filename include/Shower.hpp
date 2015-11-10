@@ -101,15 +101,17 @@ namespace CosmogenicHunter{
     followerWindow.print(output, outputOffset + 3);
     
   }
+  
+  template <class Initiator, class Follower>
+  std::ostream& operator<<(std::ostream& output, const Shower<Initiator,Follower>& shower){
+    
+    shower.print(output, 0);
+    return output;
+    
+  }
 
 }
 
-template <class Initiator, class Follower>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Shower<Initiator,Follower>& shower){
-  
-  shower.print(output, 0);
-  return output;
-  
-}
+
 
 #endif

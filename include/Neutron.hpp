@@ -27,9 +27,9 @@ namespace CosmogenicHunter{
     archive(cereal::base_class<Event>(this), position);
 
   }
+  
+  std::ostream& operator<<(std::ostream& output, const Neutron& neutron);
 
 }
-
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Neutron& neutron);
 
 #endif

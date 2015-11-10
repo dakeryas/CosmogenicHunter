@@ -32,9 +32,9 @@ namespace CosmogenicHunter{
     archive(cereal::base_class<Event>(this), position, reconstructionGoodness, chargeInformation);
 
   }
+  std::ostream& operator<<(std::ostream& output, const Candidate& candidate);
 
 }
 
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Candidate& candidate);
 
 #endif

@@ -107,15 +107,15 @@ namespace CosmogenicHunter{
       <<std::setw(outputOffset)<<std::left<<" "<<std::setw(13)<<std::left<<"StartTime RMS"<<": "<<std::setw(5)<<std::left<<startTimeRMS;
 
   }
-
-}
-
-template <class T>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::ChargeInformation<T>& chargeInformation){
   
-  chargeInformation.print(output, 0);
-  return output;
-  
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const ChargeInformation<T>& chargeInformation){
+    
+    chargeInformation.print(output, 0);
+    return output;
+    
+  }
+
 }
 
 #endif

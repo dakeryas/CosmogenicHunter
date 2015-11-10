@@ -142,29 +142,31 @@ namespace CosmogenicHunter{
     return point1.getMidpointTo(point2);
     
   }
+  
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const Point<T>& point){
+    
+    output<<"("<<std::setw(5)<<std::internal<<point.getX()<<", "<<std::setw(5)<<std::internal<<point.getY()<<", "<<std::setw(5)<<std::internal<<point.getZ()<<")";
+    return output;
+    
+  }
+
+  template <class T>
+  bool operator == (const Point<T>& point1, const Point<T>& point2){
+    
+    return point1.isEqualTo(point2);
+    
+  }
+
+  template <class T>
+  bool operator != (const Point<T>& point1, const Point<T>& point2){
+    
+    return !(point1 == point2);
+    
+  }
 
 }
 
-template <class T>
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Point<T>& point){
-  
-  output<<"("<<std::setw(5)<<std::internal<<point.getX()<<", "<<std::setw(5)<<std::internal<<point.getY()<<", "<<std::setw(5)<<std::internal<<point.getZ()<<")";
-  return output;
-  
-}
 
-template <class T>
-bool operator == (const CosmogenicHunter::Point<T>& point1, const CosmogenicHunter::Point<T>& point2){
-  
-  return point1.isEqualTo(point2);
-  
-}
-
-template <class T>
-bool operator != (const CosmogenicHunter::Point<T>& point1, const CosmogenicHunter::Point<T>& point2){
-  
-  return !(point1 == point2);
-  
-}
 
 #endif

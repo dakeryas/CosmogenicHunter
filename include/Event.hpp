@@ -40,9 +40,9 @@ namespace CosmogenicHunter{
 
   }
 
-}
+  std::ostream& operator<<(std::ostream& output, const Event& event);
+  bool operator == (const Event& event1, const Event& event2);
 
-std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Event& event);
-bool operator == (const CosmogenicHunter::Event& event1, const CosmogenicHunter::Event& event2);
+}
 
 #endif
