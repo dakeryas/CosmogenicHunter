@@ -21,9 +21,6 @@ namespace CosmogenicHunter{
   public:
     Window() = default;
     Window(double startTime, double lenght);
-    Window(const Window<T>& other) = default;
-    Window(Window<T>&& other) = default;
-    ~Window() = default;
     double getStartTime() const;
     double getLenght() const;
     unsigned getNumberOfEvents() const;
