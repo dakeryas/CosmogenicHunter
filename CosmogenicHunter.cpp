@@ -12,7 +12,7 @@
 
 namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;
-using MuonShower = CsHt::Shower<CsHt::Muon, CsHt::Neutron>;
+using MuonShower = CsHt::Shower<CsHt::Muon<float>, CsHt::Neutron<float>>;
 
 namespace CosmogenicHunter{
 
@@ -81,7 +81,7 @@ namespace CosmogenicHunter{
 	
 	if(entryPoint != Point<float>(0,0,0)){
 
-	  Muon muon(triggerTime, chargeIV, energy, identifier, track, chargeID);
+	  Muon<float> muon(triggerTime, chargeIV, energy, identifier, track, chargeID);
 	  muonShowerWindow.emplaceEvent(muon, neutronWindowLenght);
 
 	}
