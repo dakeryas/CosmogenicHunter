@@ -12,7 +12,7 @@ namespace CosmogenicHunter{
     
   public:
     Cuts() = default;
-    Cuts(Flavour flavour);
+    explicit Cuts(Flavour flavour);
     Cuts(const Cuts& other) = default;
     Cuts(Cuts&& other) = default;
     Cuts& operator = (const Cuts& other) = default;
