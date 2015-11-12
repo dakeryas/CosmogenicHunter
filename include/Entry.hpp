@@ -12,6 +12,7 @@ namespace CosmogenicHunter{
     T IDCharge;
     T energy;
     unsigned identifier;
+    Entry() = default;
     Entry(T IVCharge, T IDCharge, T energy, unsigned identifier):IVCharge(IVCharge),IDCharge(IDCharge),energy(energy),identifier(identifier){}
     
   };
