@@ -5,6 +5,9 @@
 #include "cereal/types/vector.hpp"
 #include "DCCalib-TypeDef.hh"
 #include "EntrySorter.hpp"
+#include "MuonCuts.hpp"
+#include "NeutronCuts.hpp"
+#include "CandidateCuts.hpp"
 #include "Muon.hpp"
 #include "Neutron.hpp"
 #include "Candidate.hpp"
@@ -69,7 +72,7 @@ namespace CosmogenicHunter{
 
       Entry<float> entry(chargeIV, chargeID, energy, identifier);
       auto flavour = entrySorter.getFlavour(entry);
-      
+  
       muonShowerWindow.setEndTime(triggerTime + 1);
 
       if(flavour == Flavour::Muon){
@@ -154,7 +157,7 @@ int main(int argc, char* argv[]){
       
       std::cout<<"Error: '"<<targetPath<<"' is not a directory"<<std::endl;
       return 1;
-      
+
   }
   else if(!boost::filesystem::is_regular_file(mapPath)){
     
@@ -177,10 +180,12 @@ int main(int argc, char* argv[]){
       return 1;
       
     }
-    CsHt::MuonCuts<float> muonCuts(CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor);
-    CsHt::NeutronCuts<float> neutronCuts(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]);
-    CsHt::CandidateCuts<float> candidateCuts(CsHt::Flavour::Candidate, candidateIVChargeUpCut, candidateIdentifiers);
-    CsHt::EntrySorter<float> entrySorter(muonCuts, neutronCuts, candidateCuts);
+    
+    CsHt::EntrySorter<float> entrySorter;//the cuts are tested in the order in which they are passed
+    entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<float>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
+    entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<float>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, candidateIdentifiers));
+    entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<float>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
+
     CsHt::hunt(runNumber, targetPath, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
     
   }
