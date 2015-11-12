@@ -8,10 +8,7 @@
 #include "MuonCuts.hpp"
 #include "NeutronCuts.hpp"
 #include "CandidateCuts.hpp"
-#include "Muon.hpp"
-#include "Neutron.hpp"
-#include "Candidate.hpp"
-#include "Shower.hpp"
+#include "CandidateTree.hpp"
 
 namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;
@@ -82,15 +79,16 @@ namespace CosmogenicHunter{
 	Point<float> exitPoint(recoMuHamInfo->GetExitID()[0], recoMuHamInfo->GetExitID()[1], recoMuHamInfo->GetExitID()[2]);
 	Segment<float> track(entryPoint, exitPoint);
 	
-	if(entryPoint != Point<float>(0,0,0)){
-
-	  Muon<float> muon(triggerTime, chargeIV, energy, identifier, track, chargeID);
-	  muonShowerWindow.emplaceEvent(muon, neutronWindowLenght);
-
-	}
+	if(entryPoint != Point<float>(0,0,0)) muonShowerWindow.emplaceEvent(Muon<float>(triggerTime, chargeIV, energy, identifier, track, chargeID), neutronWindowLenght);
       
       }
-      else if(flavour == Flavour::Candidate && triggerTime > muonWindowLenght) outputArchive(muonShowerWindow);//we cannot save candidate trees too early in the run
+      else if(flavour == Flavour::Candidate && triggerTime > muonWindowLenght){//we cannot save candidate trees too early in the run
+	
+	ChargeInformation<float> chargeInformation(globalInfo->GetQRMS(), globalInfo->GetQdiff(), globalInfo->GetOffQmaxID()/chargeID, globalInfo->GetRMSTstart());
+	Candidate<float> candidate(triggerTime, chargeIV, energy, identifier, position, recoBAMAInfo->GetFuncV(), chargeInformation);
+	outputArchive(CandidateTree<float,float>(candidate, muonShowerWindow));
+	
+      }
       else if(flavour == Flavour::Neutron){
 	
 	for(auto& muonShower : muonShowerWindow) muonShower.emplaceFollower(triggerTime, chargeIV, energy, identifier, position);
