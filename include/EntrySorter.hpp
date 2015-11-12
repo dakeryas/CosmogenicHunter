@@ -2,7 +2,6 @@
 #define ENTRY_SORTER_H
 
 #include "Entry.hpp"
-#include "Flavour.hpp"
 #include "MuonCuts.hpp"
 #include "NeutronCuts.hpp"
 #include "CandidateCuts.hpp"

@@ -19,7 +19,7 @@ namespace CosmogenicHunter{
 
   public:
     MuonCuts() = default;
-    MuonCuts(T IVChargeThreshold, T energyThreshold, T energyToIDChargeFactor);
+    MuonCuts(Flavour flavour, T IVChargeThreshold, T energyThreshold, T energyToIDChargeFactor);
     T getIVChargeThreshold() const;
     T getEnergyToIDChargeFactor() const;
     T getEnergyThreshold() const;
@@ -51,8 +51,8 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  MuonCuts<T>::MuonCuts(T IVChargeThreshold, T energyThreshold,  T energyToIDChargeFactor)
-  :IVChargeThreshold(IVChargeThreshold),energyThreshold(energyThreshold),energyToIDChargeFactor(energyToIDChargeFactor),IDChargeThreshold(energyThreshold * energyToIDChargeFactor), IDChargeToEnergyFactor(1/energyToIDChargeFactor){
+  MuonCuts<T>::MuonCuts(Flavour flavour, T IVChargeThreshold, T energyThreshold,  T energyToIDChargeFactor)
+  :Cuts<T>(flavour),IVChargeThreshold(IVChargeThreshold),energyThreshold(energyThreshold),energyToIDChargeFactor(energyToIDChargeFactor),IDChargeThreshold(energyThreshold * energyToIDChargeFactor), IDChargeToEnergyFactor(1/energyToIDChargeFactor){
     
   }
 

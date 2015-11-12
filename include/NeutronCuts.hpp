@@ -13,7 +13,7 @@ namespace CosmogenicHunter{
 
   public:
     NeutronCuts() = default;
-    NeutronCuts(T energyLowCut, T energyUpCut);
+    NeutronCuts(Flavour flavour, T energyLowCut, T energyUpCut);
     T getEnergyLowCut() const;
     T getEnergyUpCut() const;
     void setEnergyLowCut(T energyLowCut);
@@ -23,8 +23,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  NeutronCuts<T>::NeutronCuts(T energyLowCut, T energyUpCut)
-  :energyLowCut(energyLowCut),energyUpCut(energyUpCut){
+  NeutronCuts<T>::NeutronCuts(Flavour flavour, T energyLowCut, T energyUpCut)
+  :Cuts<T>(flavour),energyLowCut(energyLowCut),energyUpCut(energyUpCut){
     
   }
 

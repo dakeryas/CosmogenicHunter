@@ -6,7 +6,7 @@
 
 namespace CosmogenicHunter{
 
-  enum class Flavour{Muon, Neutron, Candidate, Other};
+  enum class Flavour : char {Muon, Neutron, Candidate, Other};
   std::ostream& operator<<(std::ostream& output, Flavour flavour);
   
 }

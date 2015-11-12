@@ -177,9 +177,9 @@ int main(int argc, char* argv[]){
       return 1;
       
     }
-    CsHt::MuonCuts<float> muonCuts(IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor);
-    CsHt::NeutronCuts<float> neutronCuts(neutronEnergyBounds[0], neutronEnergyBounds[1]);
-    CsHt::CandidateCuts<float> candidateCuts(candidateIVChargeUpCut, candidateIdentifiers);
+    CsHt::MuonCuts<float> muonCuts(CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor);
+    CsHt::NeutronCuts<float> neutronCuts(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]);
+    CsHt::CandidateCuts<float> candidateCuts(CsHt::Flavour::Candidate, candidateIVChargeUpCut, candidateIdentifiers);
     CsHt::EntrySorter<float> entrySorter(muonCuts, neutronCuts, candidateCuts);
     CsHt::hunt(runNumber, targetPath, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
     

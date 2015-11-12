@@ -13,7 +13,7 @@ namespace CosmogenicHunter{
     
   public:
     CandidateCuts() = default;
-    CandidateCuts(T IVChargeUpCut, std::vector<unsigned> candidateIdentifiers);
+    CandidateCuts(Flavour flavour, T IVChargeUpCut, std::vector<unsigned> candidateIdentifiers);
     T getIVChargeUpCut() const;
     const std::vector<unsigned>& getCandidateIdentifiers() const;
     void setIVChargeUpCut(T IVChargeUpCut);
@@ -23,8 +23,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  CandidateCuts<T>::CandidateCuts(T IVChargeUpCut, std::vector<unsigned> candidateIdentifiers)
-  :IVChargeUpCut(IVChargeUpCut),candidateIdentifiers(candidateIdentifiers){
+  CandidateCuts<T>::CandidateCuts(Flavour flavour, T IVChargeUpCut, std::vector<unsigned> candidateIdentifiers)
+  :Cuts<T>(flavour),IVChargeUpCut(IVChargeUpCut),candidateIdentifiers(candidateIdentifiers){
     
   }
     
