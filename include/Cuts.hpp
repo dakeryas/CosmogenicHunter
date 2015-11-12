@@ -21,6 +21,7 @@ namespace CosmogenicHunter{
     void setFlavour(Flavour flavour);
     virtual ~Cuts() = default;//custom destructor implies to define (even if default-ed) all copy / move / assignement operations
     virtual bool accept(const Entry<T>& entry) const = 0;//accept or reject the entry based on the chosen cuts
+    virtual void print(std::ostream& output) const;//needed to act as if 'operator<<' was virtual
     
   };
   
@@ -40,6 +41,21 @@ namespace CosmogenicHunter{
   void Cuts<T>::setFlavour(Flavour flavour){
     
     this->flavour = flavour;
+    
+  }
+  
+  template <class T>
+  void Cuts<T>::print(std::ostream& output) const{
+    
+    output<<"Flavour: "<<flavour;
+    
+  }
+  
+  template <class T>
+  std::ostream& operator<<(std::ostream& output, const Cuts<T>& cuts){
+    
+    cuts.print(output);
+    return output;
     
   }
   

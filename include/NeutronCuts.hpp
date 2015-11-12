@@ -19,6 +19,7 @@ namespace CosmogenicHunter{
     void setEnergyLowCut(T energyLowCut);
     void setEnergyUpCut(T energyUpCut);
     bool accept(const Entry<T>& entry) const;
+    void print(std::ostream& output) const;
     
   };
   
@@ -63,12 +64,19 @@ namespace CosmogenicHunter{
 
   }
   
+  template <class T>
+  void NeutronCuts<T>::print(std::ostream& output) const{
+
+    Cuts<T>::print(output);
+    output<<"\n"<<std::setw(16)<<std::left<<"Energy lower cut"<<": "<<std::setw(6)<<std::left<<energyLowCut<<"\n"
+      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(6)<<std::left<<energyUpCut;
+
+  }
   
   template <class T>
   std::ostream& operator<<(std::ostream& output, const NeutronCuts<T>& neutronCuts){
     
-    output<<std::setw(16)<<std::left<<"Energy lower cut"<<": "<<std::setw(6)<<std::left<<neutronCuts.getEnergyLowCut()<<"\n"
-      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(6)<<std::left<<neutronCuts.getEnergyUpCut();
+    neutronCuts.print(output);
     return output;
     
   }

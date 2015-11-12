@@ -19,6 +19,7 @@ namespace CosmogenicHunter{
     void setIVChargeUpCut(T IVChargeUpCut);
     void setCandidateIdentifiers(std::vector<unsigned> candidateIdentifiers);
     bool accept(const Entry<T>& entry) const;
+    void print(std::ostream& output) const;
     
   };
   
@@ -64,11 +65,19 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
+  void CandidateCuts<T>::print(std::ostream& output) const{
+
+    Cuts<T>::print(output);
+    output<<"\n"<<std::setw(14)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::left<<IVChargeUpCut<<"\n"
+      <<std::setw(14)<<std::left<<"Candidate ID's"<<": ";
+    for(auto identifier : candidateIdentifiers) output<<"\n"<<identifier;
+
+  }
+  
+  template <class T>
   std::ostream& operator<<(std::ostream& output, const CandidateCuts<T>& candidateCuts){
     
-    output<<std::setw(14)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::left<<candidateCuts.getIVChargeUpCut()<<"\n"
-      <<std::setw(14)<<std::left<<"Candidate ID's"<<": ";
-    for(auto identifier : candidateCuts.getCandidateIdentifiers()) output<<"\n"<<identifier;
+    candidateCuts.print(output);
     return output;
     
   }
