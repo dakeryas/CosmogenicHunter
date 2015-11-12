@@ -88,7 +88,7 @@ namespace CosmogenicHunter{
   template <class Initiator, class Follower>
   void Shower<Initiator, Follower>::pushBackFollower(Follower&& follower){
 
-    followerWindow.pushBackEvent(follower);
+    followerWindow.pushBackEvent(std::move(follower));//keep the r-value character with std::move
     
   }
   

@@ -198,7 +198,7 @@ namespace CosmogenicHunter{
   template <class BaseClass, class... Args>
   void Window<T>::emplaceEvent(BaseClass eventBase, Args&&... args){
 
-    if(covers(eventBase)) events.emplace_back(eventBase, std::forward<Args>(args)...);
+    if(covers(eventBase)) events.emplace_back(std::move(eventBase), std::forward<Args>(args)...);
 
   }
   
@@ -212,7 +212,7 @@ namespace CosmogenicHunter{
   template <class T>
   void Window<T>::pushBackEvent(T&& event){
     
-    if(covers(event)) events.push_back(event);
+    if(covers(event)) events.push_back(std::move(event));//keep the r-value character with std::move
 
   }
 
