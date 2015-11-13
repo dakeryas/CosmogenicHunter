@@ -54,7 +54,7 @@ namespace CosmogenicHunter{
   }
   
   template <class T, class K>
-  std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::CandidateTree<T,K>& candidateTree){
+  std::ostream& operator<<(std::ostream& output, const CandidateTree<T,K>& candidateTree){
     
     output<<"\n"<<std::setw(16)<<std::left<<"Parent Candidate"<<": \n";
     candidateTree.getCandidate().print(output, 3);

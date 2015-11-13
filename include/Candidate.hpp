@@ -74,7 +74,7 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::Candidate<T>& candidate){
+  std::ostream& operator<<(std::ostream& output, const Candidate<T>& candidate){
     
     candidate.print(output, 0);
     return output;

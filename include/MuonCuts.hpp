@@ -165,7 +165,7 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  std::ostream& operator<<(std::ostream& output, const CosmogenicHunter::MuonCuts<T>& muonCuts){
+  std::ostream& operator<<(std::ostream& output, const MuonCuts<T>& muonCuts){
     
     muonCuts.print(output);
     return output;
