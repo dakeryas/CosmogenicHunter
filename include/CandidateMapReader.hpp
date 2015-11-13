@@ -15,6 +15,8 @@ namespace CosmogenicHunter{
   public:
     CandidateMapReader() = default;
     void Read(const boost::filesystem::path& mapPath);
+    unsigned getCandidateMapSize() const;
+    bool isCandidateMapEmpty() const;
     const std::vector<unsigned>& getCandidateIdentifiers(unsigned runNumber);
     
   };

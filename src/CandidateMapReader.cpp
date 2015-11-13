@@ -9,7 +9,19 @@ namespace CosmogenicHunter{
     inputArchive(candidatesMap);
 
   }
+   
+  unsigned CandidateMapReader::getCandidateMapSize() const{
     
+    return candidatesMap.size();
+
+  }
+  
+  bool CandidateMapReader::isCandidateMapEmpty() const{
+    
+    return candidatesMap.empty();
+
+  }
+  
   const std::vector<unsigned>& CandidateMapReader::getCandidateIdentifiers(unsigned runNumber){
   
     return candidatesMap.at(runNumber);
