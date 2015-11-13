@@ -17,10 +17,9 @@ using MuonShower = CsHt::Shower<CsHt::Muon<T>, CsHt::Neutron<K>>;
 namespace CosmogenicHunter{
 
   template <class T, class K>
-  void hunt(const boost::filesystem::path& targetPath, const boost::filesystem::path& outputPath, const EntrySorter<K>& entrySorter, double muonWindowLenght, double neutronWindowLenght){
+  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<K>& entrySorter, double muonWindowLenght, double neutronWindowLenght){
 
-    TFile* file = TFile::Open(targetPath.c_str());
-    TTree* globalInfo = dynamic_cast<TTree*>(file->Get("GI"));
+    TTree* globalInfo = dynamic_cast<TTree*>(targetFile->Get("GI"));
     InfoAccessor infoAccessor(globalInfo);
     
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
@@ -109,13 +108,7 @@ int main(int argc, char* argv[]){
     
   }
   
-  if(!boost::filesystem::is_regular_file(targetPath)){
-      
-      std::cout<<"Error: "<<targetPath<<" is not a regular file"<<std::endl;
-      return 1;
-
-  }
-  else if(!boost::filesystem::is_regular_file(mapPath)){
+  if(!boost::filesystem::is_regular_file(mapPath)){
     
     std::cout<<"Error: "<<mapPath<<" is not a regular file"<<std::endl;
     return 1;
@@ -123,9 +116,16 @@ int main(int argc, char* argv[]){
   }
   else{
     
+    TFile* targetFile = TFile::Open(targetPath.c_str());
     unsigned runNumber = CsHt::Utility::getRunNumber(targetPath.stem().string());
     
-    if(runNumber == 0){
+    if(targetFile == nullptr){
+      
+      std::cout<<"Error: "<<targetPath<<" cannot be opened"<<std::endl;
+      return 1;
+      
+    }
+    else if(runNumber == 0){
       
       std::cout<<"Error: cannot deduce the run number from "<<targetPath<<std::endl;
       return 1;
@@ -154,7 +154,7 @@ int main(int argc, char* argv[]){
       entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, candidateIdentifiers));
       entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
 
-      CsHt::hunt<float>(targetPath, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
+      CsHt::hunt<float>(targetFile, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
       
     }
     
