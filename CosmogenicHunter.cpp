@@ -7,7 +7,7 @@
 #include "MuonCuts.hpp"
 #include "NeutronCuts.hpp"
 #include "CandidateCuts.hpp"
-#include "CandidateTree.hpp"
+#include "Cosmogenic/CandidateTree.hpp"
 
 namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;

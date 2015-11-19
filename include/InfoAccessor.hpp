@@ -3,8 +3,8 @@
 
 #include "TTree.h"
 #include "Entry.hpp"
-#include "Segment.hpp"
-#include "ChargeInformation.hpp"
+#include "Cosmogenic/Segment.hpp"
+#include "Cosmogenic/ChargeInformation.hpp"
 
 namespace CosmogenicHunter{
 
