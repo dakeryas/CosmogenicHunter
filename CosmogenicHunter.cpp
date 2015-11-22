@@ -41,16 +41,16 @@ namespace CosmogenicHunter{
 	  muonShowerWindow.emplaceEvent(Muon<T>(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, track, entry.IDCharge), neutronWindowLenght);
       
       }
-      else if(flavour == Flavour::Candidate && entry.triggerTime > muonWindowLenght){//we cannot save candidate trees too early in the run
-	
-	Single<T> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
-	outputArchive(CandidateTree<T,T>(candidate, muonShowerWindow));
-	
-      }
       else if(flavour == Flavour::Neutron){
 	
 	for(auto& muonShower : muonShowerWindow)
 	  muonShower.emplaceFollower(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
+	
+      }
+      else if(flavour == Flavour::Candidate && entry.triggerTime > muonWindowLenght){//we cannot save candidate trees too early in the run
+	
+	Single<T> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
+	outputArchive(CandidateTree<T,T>(candidate, muonShowerWindow));
 	
       }
       
