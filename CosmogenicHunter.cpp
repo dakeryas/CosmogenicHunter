@@ -12,7 +12,7 @@
 namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;
 template <class T, class K>
-using MuonShower = CsHt::Shower<CsHt::Muon<T>, CsHt::Neutron<K>>;
+using MuonShower = CsHt::Shower<CsHt::Muon<T>, CsHt::Single<K>>;
 
 namespace CosmogenicHunter{
 
@@ -43,14 +43,14 @@ namespace CosmogenicHunter{
       }
       else if(flavour == Flavour::Candidate && entry.triggerTime > muonWindowLenght){//we cannot save candidate trees too early in the run
 	
-	Candidate<T> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
+	Single<T> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
 	outputArchive(CandidateTree<T,T>(candidate, muonShowerWindow));
 	
       }
       else if(flavour == Flavour::Neutron){
 	
 	for(auto& muonShower : muonShowerWindow)
-	  muonShower.emplaceFollower(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>());
+	  muonShower.emplaceFollower(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
 	
       }
       
