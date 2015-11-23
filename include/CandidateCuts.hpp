@@ -9,14 +9,17 @@ namespace CosmogenicHunter{
   class CandidateCuts: public Cuts<T>{
     
     T IVChargeUpCut;
+    double minimumTriggerTime;//do not consider events too close to the begining of the run
     std::vector<unsigned> candidateIdentifiers;//ID's of the IBD candidates to decide whether the entry is a candidate
     
   public:
     CandidateCuts() = default;
-    CandidateCuts(Flavour flavour, T IVChargeUpCut, std::vector<unsigned> candidateIdentifiers);
+    CandidateCuts(Flavour flavour, T IVChargeUpCut, double minimumTriggerTime,std::vector<unsigned> candidateIdentifiers);
     T getIVChargeUpCut() const;
+    double getMinimumTriggerTime() const;
     const std::vector<unsigned>& getCandidateIdentifiers() const;
     void setIVChargeUpCut(T IVChargeUpCut);
+    void setMinimumTriggerTime(double minimumTriggerTime);
     void setCandidateIdentifiers(std::vector<unsigned> candidateIdentifiers);
     bool accept(const Entry<T>& entry) const;
     void print(std::ostream& output) const;
@@ -24,8 +27,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  CandidateCuts<T>::CandidateCuts(Flavour flavour, T IVChargeUpCut, std::vector<unsigned> candidateIdentifiers)
-  :Cuts<T>(flavour),IVChargeUpCut(IVChargeUpCut),candidateIdentifiers(candidateIdentifiers){
+  CandidateCuts<T>::CandidateCuts(Flavour flavour, T IVChargeUpCut, double minimumTriggerTime, std::vector<unsigned> candidateIdentifiers)
+  :Cuts<T>(flavour),IVChargeUpCut(IVChargeUpCut),minimumTriggerTime(minimumTriggerTime),candidateIdentifiers(candidateIdentifiers){
     
   }
     
@@ -37,12 +40,26 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
+  double CandidateCuts<T>::getMinimumTriggerTime() const{
+    
+    return minimumTriggerTime;
+
+  }
+  
+  template <class T>
   const std::vector<unsigned>& CandidateCuts<T>::getCandidateIdentifiers() const{
     
     return candidateIdentifiers;
 
   }
 
+  template <class T>
+  void CandidateCuts<T>::setMinimumTriggerTime(double minimumTriggerTime){
+    
+    this->minimumTriggerTime = minimumTriggerTime;
+
+  }
+  
   template <class T>
   void CandidateCuts<T>::setIVChargeUpCut(T IVChargeUpCut){
     
@@ -60,7 +77,7 @@ namespace CosmogenicHunter{
   template <class T>
   bool CandidateCuts<T>::accept(const Entry<T>& entry) const{
 
-    return entry.IVCharge < IVChargeUpCut && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
+    return entry.IVCharge < IVChargeUpCut && entry.triggerTime > minimumTriggerTime && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
 
   }
   
@@ -68,8 +85,9 @@ namespace CosmogenicHunter{
   void CandidateCuts<T>::print(std::ostream& output) const{
 
     Cuts<T>::print(output);
-    output<<"\n"<<std::setw(14)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::left<<IVChargeUpCut<<"\n"
-      <<std::setw(14)<<std::left<<"Candidate ID's"<<": ";
+    output<<"\n"<<std::setw(16)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::left<<IVChargeUpCut
+      <<"\n"<<std::setw(16)<<std::left<<"min trigger time"<<": "<<std::setw(8)<<std::left<<minimumTriggerTime
+      <<"\n"<<std::setw(16)<<std::left<<"Candidate ID's"<<": ";
     for(auto identifier : candidateIdentifiers) output<<"\n"<<identifier;
 
   }

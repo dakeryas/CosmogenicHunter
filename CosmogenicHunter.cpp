@@ -47,7 +47,7 @@ namespace CosmogenicHunter{
 	  muonShower.emplaceFollower(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
 	
       }
-      else if(flavour == Flavour::Candidate && entry.triggerTime > muonWindowLenght){//we cannot save candidate trees too early in the run
+      else if(flavour == Flavour::Candidate){
 	
 	Single<T> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
 	outputArchive(CandidateTree<T,T>(candidate, muonShowerWindow));
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]){
 
       CsHt::EntrySorter<double> entrySorter;//the cuts are tested in the order in which they are passed
       entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
-      entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, candidateIdentifiers));
+      entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
       entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
 
       CsHt::hunt<float>(targetFile, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
