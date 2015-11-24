@@ -2,59 +2,24 @@
 #include "TFile.h"
 #include "Utility.hpp"
 #include "CandidateMapReader.hpp"
-#include "InfoAccessor.hpp"
-#include "EntrySorter.hpp"
+#include "Hunter.hpp"
 #include "MuonCuts.hpp"
 #include "NeutronCuts.hpp"
 #include "CandidateCuts.hpp"
-#include "Cosmogenic/CandidateTree.hpp"
 
 namespace CsHt = CosmogenicHunter;
 namespace bpo = boost::program_options;
-template <class T, class K>
-using MuonShower = CsHt::Shower<CsHt::Muon<T>, CsHt::Single<K>>;
 
 namespace CosmogenicHunter{
 
-  template <class T, class K>
-  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<K>& entrySorter, double muonWindowLenght, double neutronWindowLenght){
+  template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
+  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, EntrySorter<EntryAccuracy> entrySorter, double muonWindowLenght, double neutronWindowLenght){
 
     TTree* globalInfo = dynamic_cast<TTree*>(targetFile->Get("GI"));
-    InfoAccessor infoAccessor(globalInfo);
-    
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
-    cereal::BinaryOutputArchive outputArchive(outputStream);
 
-    Window<MuonShower<T,T>> muonShowerWindow(0, muonWindowLenght);
-
-    while(infoAccessor.loadInfo()){
-      
-      auto entry = infoAccessor.getEntry();
-      auto flavour = entrySorter.getFlavour(entry);
-  
-      muonShowerWindow.setEndTime(entry.triggerTime + 1);
-
-      if(flavour == Flavour::Muon){
-	
-	Segment<T> track = infoAccessor.getMuonTrack<T>();
-	if(track != Segment<T>())
-	  muonShowerWindow.emplaceEvent(Muon<T>(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, track, entry.IDCharge), neutronWindowLenght);
-      
-      }
-      else if(flavour == Flavour::Neutron){
-	
-	for(auto& muonShower : muonShowerWindow)
-	  muonShower.emplaceFollower(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
-	
-      }
-      else if(flavour == Flavour::Candidate){
-	
-	Single<T> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<T>(), infoAccessor.getReconstructionGoodness<T>(), infoAccessor.getChargeInformation<T>());
-	outputArchive(CandidateTree<T,T>(candidate, muonShowerWindow));
-	
-      }
-      
-    }
+    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(std::move(entrySorter), muonWindowLenght, neutronWindowLenght);
+    hunter.chaseAndSave(globalInfo, outputStream);
 
   }
   
@@ -154,7 +119,7 @@ int main(int argc, char* argv[]){
       entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
       entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
 
-      CsHt::hunt<float>(targetFile, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
+      CsHt::hunt<float, float>(targetFile, outputPath, std::move(entrySorter), muonWindowLenght, neutronWindowLenght);
       
     }
     
