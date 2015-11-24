@@ -13,12 +13,12 @@ namespace bpo = boost::program_options;
 namespace CosmogenicHunter{
 
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
-  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, EntrySorter<EntryAccuracy> entrySorter, double muonWindowLenght, double neutronWindowLenght){
+  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<EntryAccuracy>& entrySorter, double muonWindowLenght, double neutronWindowLenght){
 
     TTree* globalInfo = dynamic_cast<TTree*>(targetFile->Get("GI"));
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
-
-    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(std::move(entrySorter), muonWindowLenght, neutronWindowLenght);
+    
+    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(entrySorter, muonWindowLenght, neutronWindowLenght);
     hunter.chaseAndSave(globalInfo, outputStream);
 
   }
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]){
       entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, singleIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
       entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
 
-      CsHt::hunt<float, float>(targetFile, outputPath, std::move(entrySorter), muonWindowLenght, neutronWindowLenght);
+      CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, muonWindowLenght, neutronWindowLenght);
       
     }
     

@@ -2,7 +2,6 @@
 #define ENTRY_SORTER_H
 
 #include <vector>
-#include <memory>
 #include "Entry.hpp"
 #include "Cuts.hpp"
 
@@ -16,10 +15,10 @@ namespace CosmogenicHunter{
   public:
     EntrySorter() = default;
     EntrySorter(std::vector<std::unique_ptr<Cuts<T>>> cuts);//ordering is important since the cuts are applied as they are stored
-    EntrySorter(const EntrySorter<T>& other) = delete;
+    EntrySorter(const EntrySorter<T>& other);
     EntrySorter(EntrySorter&& other) = default;
-    EntrySorter& operator = (const EntrySorter<T>& other) = delete;
-    EntrySorter& operator = (EntrySorter&& other) = default;
+    EntrySorter<T>& operator = (EntrySorter<T> other);
+    EntrySorter<T>& operator = (EntrySorter<T>&& other) = default;
     virtual ~EntrySorter() = default;//custom destructor implies to define (even if default-ed) all copy / move / assignement operations
     const std::vector<std::unique_ptr<Cuts<T>>>& getCuts() const;
     void emplaceCut(std::unique_ptr<Cuts<T>> cut);
@@ -33,7 +32,22 @@ namespace CosmogenicHunter{
   :cuts(std::move(cuts)){
     
   }
+  
+  template <class T>
+  EntrySorter<T>::EntrySorter(const EntrySorter<T>& other){
+    
+    for(const auto& cutPtr : other.cuts) cuts.emplace_back(cutPtr->clone());
+    
+  }
 
+  template <class T>
+  EntrySorter<T>& EntrySorter<T>::operator = (EntrySorter<T> other){
+    
+    std::swap(cuts , other.cuts);
+    return *this;
+    
+  }
+  
   template <class T>
   const std::vector<std::unique_ptr<Cuts<T>>>& EntrySorter<T>::getCuts() const{
     
