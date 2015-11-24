@@ -3,6 +3,7 @@
 
 #include <iomanip>
 #include "EntrySorter.hpp"
+#include "PairSeeker.hpp"
 #include "InfoAccessor.hpp"
 #include "Cosmogenic/CandidateTree.hpp"
 
@@ -12,6 +13,7 @@ namespace CosmogenicHunter{
   class Hunter{
     
     EntrySorter<EntryAccuracy> entrySorter;
+    PairSeeker<SingleAccuracy> pairSeeker;
     double muonWindowLenght;
     double neutronWindowLenght;
     Window<Shower<Muon<MuonAccuracy>, Single<SingleAccuracy>>> muonShowerWindow;
@@ -19,14 +21,14 @@ namespace CosmogenicHunter{
     void processCurrentEntry(InfoAccessor& infoAccessor, cereal::BinaryOutputArchive& outputArchive);
     
   public:
-    Hunter(EntrySorter<EntryAccuracy> entrySorter, double muonWindowLenght, double neutronWindowLenght);
+    Hunter(EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLenght, double neutronWindowLenght);
     void chaseAndSave(TTree* globalInfo, std::ofstream& outputStream);//read 'globaInfo' and save the results into 'outputStream'
     
   };
   
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
-  Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy>::Hunter(EntrySorter<EntryAccuracy> entrySorter, double muonWindowLenght, double neutronWindowLenght)
-  :entrySorter(std::move(entrySorter)),muonWindowLenght(muonWindowLenght),neutronWindowLenght(neutronWindowLenght),muonShowerWindow(0, muonWindowLenght){
+  Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy>::Hunter(EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLenght, double neutronWindowLenght)
+  :entrySorter(std::move(entrySorter)),pairSeeker(std::move(pairSeeker)),muonWindowLenght(muonWindowLenght),neutronWindowLenght(neutronWindowLenght),muonShowerWindow(0, muonWindowLenght){
     
   }
   
@@ -47,14 +49,27 @@ namespace CosmogenicHunter{
     }
     else if(flavour == Flavour::Neutron){
       
-      for(auto& muonShower : muonShowerWindow)
-	muonShower.emplaceFollower(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> neutron(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      pairSeeker.catchDelayed(neutron);
+      
+      if(pairSeeker.caughtDelayed()){
+	
+	outputArchive(CandidateTree<SingleAccuracy,MuonAccuracy>(pairSeeker.getCandidatePair(), muonShowerWindow));
+	pairSeeker.reset();
+	
+      }
+      else{
+      
+	for(auto& muonShower : muonShowerWindow)
+	  muonShower.emplaceFollower(neutron);
+	
+      }
       
     }
     else if(flavour == Flavour::Candidate){
       
       Single<SingleAccuracy> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
-      outputArchive(CandidateTree<SingleAccuracy,MuonAccuracy>(candidate, muonShowerWindow));
+      pairSeeker.catchPrompt(candidate);
       
     }
     
