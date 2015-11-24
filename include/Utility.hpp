@@ -1,5 +1,5 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+#ifndef COSMOGENIC_HUNTER_UTILITY_H
+#define COSMOGENIC_HUNTER_UTILITY_H
 
 #include <regex>
 

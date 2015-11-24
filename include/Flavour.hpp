@@ -1,5 +1,5 @@
-#ifndef FLAVOUR_H
-#define FLAVOUR_H
+#ifndef COSMOGENIC_HUNTER_FLAVOUR_H
+#define COSMOGENIC_HUNTER_FLAVOUR_H
 
 #include <map>
 #include <iostream>

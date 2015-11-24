@@ -1,5 +1,5 @@
-#ifndef ENTRY_SORTER_H
-#define ENTRY_SORTER_H
+#ifndef COSMOGENIC_HUNTER_ENTRY_SORTER_H
+#define COSMOGENIC_HUNTER_ENTRY_SORTER_H
 
 #include <vector>
 #include "Entry.hpp"

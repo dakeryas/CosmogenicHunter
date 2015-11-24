@@ -1,5 +1,5 @@
-#ifndef CUTS_H
-#define CUTS_H
+#ifndef COSMOGENIC_HUNTER_CUTS_H
+#define COSMOGENIC_HUNTER_CUTS_H
 
 #include <iomanip>
 #include <memory>

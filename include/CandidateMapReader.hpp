@@ -1,5 +1,5 @@
-#ifndef CANDIDATE_MAP_READER_H
-#define CANDIDATE_MAP_READER_H
+#ifndef COSMOGENIC_HUNTER_CANDIDATE_MAP_READER_H
+#define COSMOGENIC_HUNTER_CANDIDATE_MAP_READER_H
 
 #include <fstream>
 #include "boost/filesystem.hpp"

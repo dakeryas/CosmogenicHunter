@@ -1,5 +1,5 @@
-#ifndef PAIR_SEEKER_H
-#define PAIR_SEEKER_H
+#ifndef COSMOGENIC_HUNTER_PAIR_SEEKER_H
+#define COSMOGENIC_HUNTER_PAIR_SEEKER_H
 
 #include "Cosmogenic/CandidatePair.hpp"
 

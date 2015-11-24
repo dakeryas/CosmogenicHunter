@@ -1,5 +1,5 @@
-#ifndef MUON_CUTS_H
-#define MUON_CUTS_H
+#ifndef COSMOGENIC_HUNTER_MUON_CUTS_H
+#define COSMOGENIC_HUNTER_MUON_CUTS_H
 
 #include "Cuts.hpp"
 

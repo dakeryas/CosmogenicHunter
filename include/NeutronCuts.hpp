@@ -1,5 +1,5 @@
-#ifndef NEUTRON_CUTS_H
-#define NEUTRON_CUTS_H
+#ifndef COSMOGENIC_HUNTER_NEUTRON_CUTS_H
+#define COSMOGENIC_HUNTER_NEUTRON_CUTS_H
 
 #include "Cuts.hpp"
 

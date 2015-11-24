@@ -1,5 +1,5 @@
-#ifndef INFO_ACCESSOR_H
-#define INFO_ACCESSOR_H
+#ifndef COSMOGENIC_HUNTER_INFO_ACCESSOR_H
+#define COSMOGENIC_HUNTER_INFO_ACCESSOR_H
 
 #include "TTree.h"
 #include "Entry.hpp"

@@ -1,5 +1,5 @@
-#ifndef ENTRY_H
-#define ENTRY_H
+#ifndef COSMOGENIC_HUNTER_ENTRY_H
+#define COSMOGENIC_HUNTER_ENTRY_H
 
 #include <iomanip>
 

@@ -1,5 +1,5 @@
-#ifndef HUNTER_H
-#define HUNTER_H
+#ifndef COSMOGENIC_HUNTER_HUNTER_H
+#define COSMOGENIC_HUNTER_HUNTER_H
 
 #include <iomanip>
 #include "EntrySorter.hpp"
