@@ -23,9 +23,9 @@ namespace CosmogenicHunter{
     
   public:
     explicit InfoAccessor(TTree* tree);//unfortunately the ROOT reading methods modify the state of TTree
-    InfoAccessor(const InfoAccessor& other) = delete;
+    InfoAccessor(const InfoAccessor& other) = default;
     InfoAccessor(InfoAccessor&& other) = default;
-    InfoAccessor& operator = (const InfoAccessor& other) = delete;
+    InfoAccessor& operator = (const InfoAccessor& other) = default;
     InfoAccessor& operator = (InfoAccessor&& other) = default;
     virtual ~InfoAccessor() = default;
     unsigned getCurrentIndex() const;
@@ -39,6 +39,7 @@ namespace CosmogenicHunter{
     template <class T>
     ChargeInformation<T> getChargeInformation() const;
     bool loadInfo();//write all infos from the tree into the data members, return false at the tree's end
+    void reset();//return to start index
     
   };
   

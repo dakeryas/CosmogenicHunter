@@ -62,6 +62,12 @@ namespace CosmogenicHunter{
 
   }
   
+  void InfoAccessor::reset(){
+    
+    currentIndex = 0;
+    
+  }
+  
   std::ostream& operator<<(std::ostream& output, const InfoAccessor& infoAccessor){
     
     output<<std::setw(7)<<std::left<<"Index: "<<std::setw(10)<<std::left<<infoAccessor.getCurrentIndex()<<"\n"
