@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
   double IVChargeThreshold, visibleEnergyThreshold, energyToIDChargeFactor;
   double neutronWindowLenght;
   std::vector<double> neutronEnergyBounds(2);
-  double candidateIVChargeUpCut;
+  double singleIVChargeUpCut;
   
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   ("factor-muon-energy-to-ID-charge,f", bpo::value<double>(&energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)")
   ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
   ("neutron-energy-bounds", bpo::value<std::vector<double>>(&neutronEnergyBounds)->multitoken()->required(), "Bounds on the neutron's energy (MeV)")
-  ("candidate-IV-up-cut", bpo::value<double>(&candidateIVChargeUpCut)->required(), "Upper cut on the candidate's Inner Veto charge (DUQ)");
+  ("single-IV-up-cut", bpo::value<double>(&singleIVChargeUpCut)->required(), "Upper cut on the single's Inner Veto charge (DUQ)");
 
   bpo::positional_options_description positionalOptions;//to use arguments without "--"
   positionalOptions.add("target", 1);
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]){
 
       CsHt::EntrySorter<double> entrySorter;//the cuts are tested in the order in which they are passed
       entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
-      entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
+      entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, singleIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
       entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
 
       CsHt::hunt<float, float>(targetFile, outputPath, std::move(entrySorter), muonWindowLenght, neutronWindowLenght);
