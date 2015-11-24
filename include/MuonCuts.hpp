@@ -33,6 +33,7 @@ namespace CosmogenicHunter{
     bool accept(const Entry<T>& entry) const;
     T getEnergy(T IDCharge) const;
     T getIDCharge(T energy) const;
+    std::unique_ptr<Cuts<T>> clone() const;
     void print(std::ostream& output) const;
     
   };
@@ -149,6 +150,13 @@ namespace CosmogenicHunter{
   T MuonCuts<T>::getIDCharge(T energy) const{
 
     return energy * energyToIDChargeFactor;
+
+  }
+  
+  template <class T>
+  std::unique_ptr<Cuts<T>> MuonCuts<T>::clone() const{
+
+    return std::make_unique<MuonCuts<T>>(*this);
 
   }
   

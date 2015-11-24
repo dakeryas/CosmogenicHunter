@@ -2,6 +2,7 @@
 #define CUTS_H
 
 #include <iomanip>
+#include <memory>
 #include "Flavour.hpp"
 
 namespace CosmogenicHunter{
@@ -21,6 +22,7 @@ namespace CosmogenicHunter{
     void setFlavour(Flavour flavour);
     virtual ~Cuts() = default;//custom destructor implies to define (even if default-ed) all copy / move / assignement operations
     virtual bool accept(const Entry<T>& entry) const = 0;//accept or reject the entry based on the chosen cuts
+    virtual std::unique_ptr<Cuts<T>> clone() const = 0;
     virtual void print(std::ostream& output) const;//needed to act as if 'operator<<' was virtual
     
   };

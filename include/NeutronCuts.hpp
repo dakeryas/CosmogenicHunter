@@ -19,6 +19,7 @@ namespace CosmogenicHunter{
     void setEnergyLowCut(T energyLowCut);
     void setEnergyUpCut(T energyUpCut);
     bool accept(const Entry<T>& entry) const;
+    std::unique_ptr<Cuts<T>> clone() const;
     void print(std::ostream& output) const;
     
   };
@@ -61,6 +62,13 @@ namespace CosmogenicHunter{
   bool NeutronCuts<T>::accept(const Entry<T>& entry) const{
 
     return entry.energy > energyLowCut && entry.energy < energyUpCut;
+
+  }
+  
+  template <class T>
+  std::unique_ptr<Cuts<T>> NeutronCuts<T>::clone() const{
+
+    return std::make_unique<NeutronCuts<T>>(*this);
 
   }
   
