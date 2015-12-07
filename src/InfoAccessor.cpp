@@ -18,11 +18,11 @@ namespace CosmogenicHunter{
     tree->SetBranchStatus("ChargeID", true);
     tree->SetBranchStatus("Vtx_BAMA", true);
     tree->SetBranchStatus("EvisID", true);
-    tree->SetBranchStatus("Trk_MuHamID", true);
     tree->SetBranchStatus("QRMS", true);
     tree->SetBranchStatus("Qdiff", true);
     tree->SetBranchStatus("Qratio", true);
     tree->SetBranchStatus("RMSTstart", true);
+    tree->SetBranchStatus("Trk_MuHamID", true);
     tree->SetBranchStatus("Vtx_BAMAfuncV", true);
     
     tree->SetBranchAddress("TrigTime", &entry.triggerTime);
@@ -31,11 +31,11 @@ namespace CosmogenicHunter{
     tree->SetBranchAddress("ChargeID", IDCharge);
     tree->SetBranchAddress("Vtx_BAMA", recoBAMAVertex);
     tree->SetBranchAddress("EvisID", &entry.energy);
+    tree->SetBranchAddress("QRMS", &entry.chargeData.RMS);
+    tree->SetBranchAddress("Qdiff", &entry.chargeData.difference);
+    tree->SetBranchAddress("Qratio", &entry.chargeData.ratio);
+    tree->SetBranchAddress("RMSTstart", &entry.chargeData.startTimeRMS);
     tree->SetBranchAddress("Trk_MuHamID", trackMuHam);
-    tree->SetBranchAddress("QRMS", &chargeRMS);
-    tree->SetBranchAddress("Qdiff", &chargeDifference);
-    tree->SetBranchAddress("Qratio", &chargeRatio);
-    tree->SetBranchAddress("RMSTstart", &startTimeRMS);
     tree->SetBranchAddress("Vtx_BAMAfuncV", &reconstructionGoodness);
     
   }

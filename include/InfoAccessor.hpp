@@ -15,9 +15,8 @@ namespace CosmogenicHunter{
     double IVCharge[3];
     double IDCharge[3];
     Entry<double> entry;//the actual TTree is written with double's only
-    double recoBAMAVertex[3];
     double trackMuHam[2][3];
-    double chargeRMS, chargeDifference, chargeRatio, startTimeRMS;
+    double recoBAMAVertex[3];
     double reconstructionGoodness;
     void updateEntry();//set entry members to the C-array values
     
@@ -74,7 +73,7 @@ namespace CosmogenicHunter{
   ChargeInformation<T> InfoAccessor::getChargeInformation() const{
     
     
-    return ChargeInformation<T> (chargeRMS, chargeDifference, chargeRatio, startTimeRMS);
+    return ChargeInformation<T> (entry.chargeData.RMS, entry.chargeData.difference, entry.chargeData.ratio, entry.chargeData.startTimeRMS);
     
   }
   

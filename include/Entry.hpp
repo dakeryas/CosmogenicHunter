@@ -1,10 +1,10 @@
 #ifndef COSMOGENIC_HUNTER_ENTRY_H
 #define COSMOGENIC_HUNTER_ENTRY_H
 
-#include <iomanip>
+#include "ChargeData.hpp"
 
 namespace CosmogenicHunter{
-  
+
   template <class T>
   struct Entry{//public for ROOT TTree's branches address
     
@@ -13,25 +13,25 @@ namespace CosmogenicHunter{
     T IDCharge;
     T energy;
     unsigned identifier;
+    ChargeData<T> chargeData;
     Entry() = default;
-    Entry(double triggerTime, T IVCharge, T IDCharge, T energy, unsigned identifier);
     
   };
   
   template <class T>
-  Entry<T>::Entry(double triggerTime, T IVCharge, T IDCharge, T energy, unsigned identifier)
-  :triggerTime(triggerTime),IVCharge(IVCharge),IDCharge(IDCharge),energy(energy),identifier(identifier){
-      
-  }
-  
-  template <class T>
   std::ostream& operator<<(std::ostream& output, const Entry<T>& entry){
+    
+    auto formerPrecision = output.precision();
+    output<<std::fixed;
+    
+    output<<std::setw(12)<<std::right<<std::setprecision(0)<<entry.triggerTime<<" | "
+      <<std::setw(9)<<std::right<<entry.IVCharge<<" | "
+      <<std::setw(9)<<std::right<<entry.IDCharge<<" | "
+      <<std::setw(6)<<std::right<<std::setprecision(2)<<entry.energy<<" | "
+      <<std::setw(7)<<std::right<<entry.identifier<<" || "
+      <<std::setw(4*7)<<std::setprecision(0)<<entry.chargeData;
       
-    output<<std::setw(12)<<std::left<<entry.triggerTime<<" | "
-      <<std::setw(10)<<std::left<<entry.IVCharge<<" | "
-      <<std::setw(10)<<std::left<<entry.IDCharge<<" | "
-      <<std::setw(8)<<std::left<<entry.energy<<" | "
-      <<std::setw(8)<<std::left<<entry.identifier;
+    output<<std::setprecision(formerPrecision);
     return output;
       
   };

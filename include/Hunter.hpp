@@ -37,7 +37,7 @@ namespace CosmogenicHunter{
 
     auto entry = infoAccessor.getEntry();
     auto flavour = entrySorter.getFlavour(entry);
-    
+
     muonShowerWindow.setEndTime(entry.triggerTime + 1);
     
     if(flavour == Flavour::Muon){
