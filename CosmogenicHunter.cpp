@@ -1,9 +1,10 @@
-#include "boost/program_options.hpp"
 #include "TFile.h"
+#include "FixedTokensTypedValue.hpp"
 #include "Utility.hpp"
 #include "CandidateMapReader.hpp"
 #include "Hunter.hpp"
 #include "MuonCuts.hpp"
+#include "LightNoiseCuts.hpp"
 #include "NeutronCuts.hpp"
 #include "CandidateCuts.hpp"
 
@@ -35,6 +36,7 @@ int main(int argc, char* argv[]){
   double candidateIVChargeUpCut;
   std::vector<double> pairTimeCorrelationBounds(2);
   double pairSpaceCorrelationUpCut;
+  std::vector<double> lightNoiseParameters(5);
   
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
@@ -46,9 +48,10 @@ int main(int argc, char* argv[]){
   ("muon-IV-cut", bpo::value<double>(&IVChargeThreshold)->required(), "Inner Veto charge threshold for muons (DUQ)")
   ("muon-energy-cut", bpo::value<double>(&visibleEnergyThreshold)->required(), "Visible energy threshold for muons (MeV)")
   ("factor-muon-energy-to-ID-charge,f", bpo::value<double>(&energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)")
-  ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
-  ("neutron-energy-bounds", bpo::value<std::vector<double>>(&neutronEnergyBounds)->multitoken()->required(), "Bounds on the neutron's energy (MeV)")
+  ("light-noise-cuts", bpo::fixed_tokens_value<double>(&lightNoiseParameters, 5, 5)->multitoken()->required(), "Light noise rejection parameters (max RMS charge, RMS slope, max charge difference, max charge ratio, max RMS start time)")
   ("candidate-IV-up-cut", bpo::value<double>(&candidateIVChargeUpCut)->required(), "Upper cut on the candidate's Inner Veto charge (DUQ)")
+  ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
+  ("neutron-energy-bounds", bpo::fixed_tokens_value<double>(&neutronEnergyBounds, 2, 2)->multitoken()->required(), "Bounds on the neutron's energy (MeV)")
   ("pair-time-bounds", bpo::value<std::vector<double>>(&pairTimeCorrelationBounds)->multitoken()->required(), "Bounds on the prompt-delayed time correlation (ns)")
   ("pair-space-up-cut", bpo::value<double>(&pairSpaceCorrelationUpCut)->required(), "Upper cut on the prompt-delayed space correlation (mm)");
   
@@ -120,9 +123,10 @@ int main(int argc, char* argv[]){
 
       CsHt::EntrySorter<double> entrySorter;//the cuts are tested in the order in which they are passed
       entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
+      entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters[0], lightNoiseParameters[1], lightNoiseParameters[2], lightNoiseParameters[3], lightNoiseParameters[4]));
       entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
-      entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron,neutronEnergyBounds[0], neutronEnergyBounds[1]));
-
+      entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds[0], neutronEnergyBounds[1]));
+      
       CsHt::PairSeeker<float> pairSeeker(pairTimeCorrelationBounds[0], pairTimeCorrelationBounds[1], pairSpaceCorrelationUpCut);
       
       CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLenght, neutronWindowLenght);
