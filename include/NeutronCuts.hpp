@@ -47,14 +47,14 @@ namespace CosmogenicHunter{
   template <class T>
   void NeutronCuts<T>::setEnergyLowCut(T energyLowCut){
     
-    this->energyLowCut = energyLowCut;
+    if(energyLowCut > 0) this->energyLowCut = energyLowCut;
 
   }
   
   template <class T>
   void NeutronCuts<T>::setEnergyUpCut(T energyUpCut){
 
-    this->energyUpCut = energyUpCut;
+    if(energyUpCut > 0) this->energyUpCut = energyUpCut;
 
   }
   
@@ -76,8 +76,8 @@ namespace CosmogenicHunter{
   void NeutronCuts<T>::print(std::ostream& output) const{
 
     Cuts<T>::print(output);
-    output<<"\n"<<std::setw(16)<<std::left<<"Energy lower cut"<<": "<<std::setw(6)<<std::left<<energyLowCut<<"\n"
-      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(6)<<std::left<<energyUpCut;
+    output<<"\n"<<std::setw(16)<<std::left<<"Energy lower cut"<<": "<<std::setw(3)<<std::right<<energyLowCut<<"\n"
+      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(3)<<std::right<<energyUpCut;
 
   }
   

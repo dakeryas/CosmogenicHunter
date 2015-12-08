@@ -96,39 +96,55 @@ namespace CosmogenicHunter{
   template <class T>
   void MuonCuts<T>::setIVChargeThreshold(T IVChargeThreshold){
     
-    this->IVChargeThreshold = IVChargeThreshold;
+    if(IVChargeThreshold > 0) this->IVChargeThreshold = IVChargeThreshold;
 
   }
   
   template <class T>
   void MuonCuts<T>::setEnergyThreshold(T energyThreshold){
 
-    this->energyThreshold = energyThreshold;
-    updateIDChargeThreshold();
+    if(energyThreshold > 0){
+      
+      this->energyThreshold = energyThreshold;
+      updateIDChargeThreshold();
+      
+    }
 
   }
   
   template <class T>
   void MuonCuts<T>::setEnergyToIDChargeFactor(T energyToIDChargeFactor){
 
-    this->energyToIDChargeFactor = energyToIDChargeFactor;
-    updateIDChargeThreshold();
+    if(energyToIDChargeFactor > 0){
+      
+      this->energyToIDChargeFactor = energyToIDChargeFactor;
+      updateIDChargeThreshold();
+      
+    }
 
   }
   
   template <class T>
   void MuonCuts<T>::setIDChargeThreshold(T IDChargeThreshold){
 
-    this->IDChargeThreshold = IDChargeThreshold;
-    updateEnergyThreshold();
+    if(IDChargeThreshold > 0){
+      
+      this->IDChargeThreshold = IDChargeThreshold;
+      updateEnergyThreshold();
+      
+    }
     
   }
   
   template <class T>
   void MuonCuts<T>::setIDChargeToEnergyFactor(T IDChargeToEnergyFactor){
 
-    this->IDChargeToEnergyFactor = IDChargeToEnergyFactor;
-    updateEnergyThreshold();
+    if(IDChargeToEnergyFactor > 0){
+      
+      this->IDChargeToEnergyFactor = IDChargeToEnergyFactor;
+      updateEnergyThreshold();
+      
+    }
 
   }
   
@@ -164,11 +180,18 @@ namespace CosmogenicHunter{
   void MuonCuts<T>::print(std::ostream& output) const{
 
     Cuts<T>::print(output);
-    output<<"\n"<<std::setw(26)<<std::left<<"IV Charge threshold"<<": "<<std::setw(6)<<std::left<<IVChargeThreshold<<"\n"
-      <<std::setw(26)<<std::left<<"Energy threshold"<<": "<<std::setw(6)<<std::left<<energyThreshold<<"\n"
-      <<std::setw(26)<<std::left<<"Energy to ID charge factor"<<": "<<std::setw(6)<<std::left<<energyToIDChargeFactor<<"\n"
-      <<std::setw(26)<<std::left<<"ID charge threshold"<<": "<<std::setw(6)<<std::left<<IDChargeThreshold<<"\n"
-      <<std::setw(26)<<std::left<<"ID charge to energy factor"<<": "<<std::setw(6)<<std::left<<IDChargeToEnergyFactor;
+    
+    auto formerPrecision = output.precision();
+    output<<std::fixed;
+    
+    output<<"\n"<<std::setw(26)<<std::left<<"IV Charge threshold"<<": "<<std::setw(8)<<std::right<<std::setprecision(0)<<IVChargeThreshold<<"\n"
+      <<std::setw(26)<<std::left<<"Energy threshold"<<": "<<std::setw(8)<<std::right<<energyThreshold<<"\n"
+      <<std::setw(26)<<std::left<<"Energy to ID charge factor"<<": "<<std::setw(8)<<std::right<<energyToIDChargeFactor<<"\n"
+      <<std::setw(26)<<std::left<<"ID charge threshold"<<": "<<std::setw(8)<<std::right<<IDChargeThreshold<<"\n"
+      <<std::setw(26)<<std::left<<"ID charge to energy factor"<<": "<<std::setw(8)<<std::right<<std::setprecision(6)<<IDChargeToEnergyFactor;
+      
+    output.unsetf(std::ios_base::floatfield);
+    output<<std::setprecision(formerPrecision);
 
   }
   

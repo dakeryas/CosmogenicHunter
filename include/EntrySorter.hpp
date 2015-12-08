@@ -30,7 +30,7 @@ namespace CosmogenicHunter{
   template <class T>
   EntrySorter<T>::EntrySorter(std::vector<std::unique_ptr<Cuts<T>>> cuts)
   :cuts(std::move(cuts)){
-    
+
   }
   
   template <class T>
@@ -81,7 +81,8 @@ namespace CosmogenicHunter{
   template <class T>
   std::ostream& operator<<(std::ostream& output, const EntrySorter<T>& entrySorter){
     
-    for(const auto& cutPtr : entrySorter.getCuts()) output<<"\n"<<*cutPtr;
+    for(auto it = entrySorter.getCuts().begin(); it != entrySorter.getCuts().end() - 1; ++it) output<<**it<<"\n====================================\n";
+    output<<(**(entrySorter.getCuts().end() - 1));
     
     return output;
     
