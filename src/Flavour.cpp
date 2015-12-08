@@ -2,7 +2,7 @@
 
 namespace CosmogenicHunter{
 
-  std::map <Flavour, std::string> flavourMap = {{Flavour::Muon, "Muon"}, {Flavour::Neutron, "Neutron"}, {Flavour::Candidate, "Candidate"}, {Flavour::Other, "Other"}};
+  std::map <Flavour, std::string> flavourMap = {{Flavour::Muon, "Muon"}, {Flavour::LightNoise, "LightNoise"}, {Flavour::Neutron, "Neutron"}, {Flavour::Candidate, "Candidate"}, {Flavour::Other, "Other"}};
   
   const std::string& toString(Flavour flavour){
     
