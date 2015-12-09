@@ -2,14 +2,14 @@
 #define COSMOGENIC_HUNTER_PAIR_SEEKER_H
 
 #include "Cosmogenic/CandidatePair.hpp"
+#include "Bounds.hpp"
 
 namespace CosmogenicHunter{
 
   template <class T>//to accept entries saved with the accuracy of type T
   class PairSeeker{
     
-    double minTime;
-    double maxTime;
+    Bounds<double> timeBounds;
     T maxDistance;
     bool hasRecentPrompt;
     bool hasRecentDelayed;
@@ -18,7 +18,7 @@ namespace CosmogenicHunter{
     bool isAdmissibleDelayed(const Single<T>& delayed) const;
     
   public:
-    PairSeeker(double minTime, double maxTime, T maxDistance);
+    PairSeeker(Bounds<double> timeBounds, T maxDistance);
     void catchPrompt(Single<T> prompt);
     void catchDelayed(const Single<T>& delayed);
     bool caughtDelayed() const;
@@ -30,12 +30,12 @@ namespace CosmogenicHunter{
   template <class T>
   bool PairSeeker<T>::isAdmissibleDelayed(const Single<T>& delayed) const{
     
-    return areTimeCorrelated(prompt, delayed, minTime, maxTime) && areSpaceCorrelated(prompt, delayed, maxDistance);
+    return areTimeCorrelated(prompt, delayed, timeBounds.getLowEdge(), timeBounds.getUpEdge()) && areSpaceCorrelated(prompt, delayed, maxDistance);
     
   }
   
   template <class T>
-  PairSeeker<T>::PairSeeker(double minTime, double maxTime, T maxDistance):minTime(minTime),maxTime(maxTime),maxDistance(maxDistance),hasRecentPrompt(false),hasRecentDelayed(false){
+  PairSeeker<T>::PairSeeker(Bounds<double> timeBounds, T maxDistance):timeBounds(std::move(timeBounds)),maxDistance(maxDistance),hasRecentPrompt(false),hasRecentDelayed(false){
     
   }
   
@@ -52,7 +52,7 @@ namespace CosmogenicHunter{
     
     if(hasRecentPrompt && isAdmissibleDelayed(delayed)){
       
-      this->delayed = std::move(delayed);
+      this->delayed = delayed;
       hasRecentDelayed = true;
       
     }
