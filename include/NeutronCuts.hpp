@@ -15,7 +15,7 @@ namespace CosmogenicHunter{
   public:
     NeutronCuts() = default;
     NeutronCuts(Flavour flavour, std::vector<Bounds<T>> energyBounds);
-    Bounds<T> getEnergyBounds() const;
+    const std::vector<Bounds<T>>& getEnergyBounds() const;
     void setEnergyBounds(std::vector<Bounds<T>> energyBounds);
     bool accept(const Entry<T>& entry) const;
     std::unique_ptr<Cuts<T>> clone() const;
@@ -30,7 +30,7 @@ namespace CosmogenicHunter{
   }
 
   template <class T>
-  Bounds<T> NeutronCuts<T>::getEnergyBounds() const{
+  const std::vector<Bounds<T>>& NeutronCuts<T>::getEnergyBounds() const{
     
     return energyBounds;
 
