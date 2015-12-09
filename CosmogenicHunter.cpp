@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
   double muonWindowLenght;
   double IVChargeThreshold, visibleEnergyThreshold, energyToIDChargeFactor;
   double neutronWindowLenght;
-  std::vector<double> neutronEnergyBounds(2);
+  std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
   double candidateIVChargeUpCut;
   std::vector<double> pairTimeCorrelationBounds(2);
   double pairSpaceCorrelationUpCut;
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
   ("light-noise-cuts", bpo::fixed_tokens_value<double>(&lightNoiseParameters, 5, 5)->multitoken()->required(), "Light noise rejection parameters (max RMS charge, RMS slope, max charge difference, max charge ratio, max RMS start time)")
   ("candidate-IV-up-cut", bpo::value<double>(&candidateIVChargeUpCut)->required(), "Upper cut on the candidate's Inner Veto charge (DUQ)")
   ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
-  ("neutron-energy-bounds", bpo::fixed_tokens_value<double>(&neutronEnergyBounds, 2, 2)->multitoken()->required(), "Bounds on the neutron's energy (MeV)")
+  ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Bounds on the neutron's energy (MeV)")
   ("pair-time-bounds", bpo::value<std::vector<double>>(&pairTimeCorrelationBounds)->multitoken()->required(), "Bounds on the prompt-delayed time correlation (ns)")
   ("pair-space-up-cut", bpo::value<double>(&pairSpaceCorrelationUpCut)->required(), "Upper cut on the prompt-delayed space correlation (mm)");
   
@@ -73,10 +73,15 @@ int main(int argc, char* argv[]){
     bpo::notify(arguments);//the arguments are ready to be used
     
   }
-  catch(bpo::error& e){
+  catch(bpo::error& error){
     
-    std::cout<<e.what()<<std::endl;
+    std::cout<<error.what()<<std::endl;
     return 1;
+    
+  }
+  catch(std::invalid_argument& error){
+    
+    std::cout<<"Error: "<<error.what()<<std::endl;
     
   }
   
@@ -114,7 +119,7 @@ int main(int argc, char* argv[]){
 	candidateIdentifiers =  mapReader.getCandidateIdentifiers(runNumber);
 	
       }
-      catch(std::out_of_range& e){
+      catch(std::out_of_range& error){
 	
 	std::cout<<"Error: Run "<<runNumber<< " is not in the map of candidates"<<std::endl;
 	return 1;
@@ -122,13 +127,23 @@ int main(int argc, char* argv[]){
       }
 
       CsHt::EntrySorter<double> entrySorter;//the cuts are tested in the order in which they are passed
-      entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
-      entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters[0], lightNoiseParameters[1], lightNoiseParameters[2], lightNoiseParameters[3], lightNoiseParameters[4]));
-      entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
-      entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds[0], neutronEnergyBounds[1]));
       
+      try{
+	
+	entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
+	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters[0], lightNoiseParameters[1], lightNoiseParameters[2], lightNoiseParameters[3], lightNoiseParameters[4]));
+	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
+	entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds));
+	
+      }
+      catch(std::invalid_argument& error){
+	
+	std::cout<<"Error: "<<error.what()<<std::endl;
+	return 1;
+	
+      }
+      std::cout<<entrySorter<<std::endl;
       CsHt::PairSeeker<float> pairSeeker(pairTimeCorrelationBounds[0], pairTimeCorrelationBounds[1], pairSpaceCorrelationUpCut);
-      
       CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLenght, neutronWindowLenght);
       
     }

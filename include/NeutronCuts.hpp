@@ -1,23 +1,22 @@
 #ifndef COSMOGENIC_HUNTER_NEUTRON_CUTS_H
 #define COSMOGENIC_HUNTER_NEUTRON_CUTS_H
 
+#include "boost/optional.hpp"
 #include "Cuts.hpp"
+#include "Bounds.hpp"
 
 namespace CosmogenicHunter{
 
   template <class T>
   class NeutronCuts: public Cuts<T>{
     
-    T energyLowCut;//visible ID energy threshold
-    T energyUpCut;//maximum value for the visible energy
+    std::vector<Bounds<T>> energyBounds;
 
   public:
     NeutronCuts() = default;
-    NeutronCuts(Flavour flavour, T energyLowCut, T energyUpCut);
-    T getEnergyLowCut() const;
-    T getEnergyUpCut() const;
-    void setEnergyLowCut(T energyLowCut);
-    void setEnergyUpCut(T energyUpCut);
+    NeutronCuts(Flavour flavour, std::vector<Bounds<T>> energyBounds);
+    Bounds<T> getEnergyBounds() const;
+    void setEnergyBounds(std::vector<Bounds<T>> energyBounds);
     bool accept(const Entry<T>& entry) const;
     std::unique_ptr<Cuts<T>> clone() const;
     void print(std::ostream& output) const;
@@ -25,43 +24,30 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  NeutronCuts<T>::NeutronCuts(Flavour flavour, T energyLowCut, T energyUpCut)
-  :Cuts<T>(flavour),energyLowCut(energyLowCut),energyUpCut(energyUpCut){
+  NeutronCuts<T>::NeutronCuts(Flavour flavour, std::vector<Bounds<T>> energyBounds)
+  :Cuts<T>(flavour),energyBounds(std::move(energyBounds)){
     
   }
 
   template <class T>
-  T NeutronCuts<T>::getEnergyLowCut() const{
+  Bounds<T> NeutronCuts<T>::getEnergyBounds() const{
     
-    return energyLowCut;
-
-  }
-
-  template <class T>
-  T NeutronCuts<T>::getEnergyUpCut() const{
-    
-    return energyUpCut;
+    return energyBounds;
 
   }
   
   template <class T>
-  void NeutronCuts<T>::setEnergyLowCut(T energyLowCut){
+  void NeutronCuts<T>::setEnergyBounds(std::vector<Bounds<T>> energyBounds){
     
-    if(energyLowCut > 0) this->energyLowCut = energyLowCut;
-
-  }
-  
-  template <class T>
-  void NeutronCuts<T>::setEnergyUpCut(T energyUpCut){
-
-    if(energyUpCut > 0) this->energyUpCut = energyUpCut;
+    this->energyBounds = std::move(energyBounds);
 
   }
   
   template <class T>
   bool NeutronCuts<T>::accept(const Entry<T>& entry) const{
 
-    return entry.energy > energyLowCut && entry.energy < energyUpCut;
+    for(const auto& energyBound : energyBounds) if(energyBound.contains(entry.energy)) return true;
+    return false;
 
   }
   
@@ -76,8 +62,9 @@ namespace CosmogenicHunter{
   void NeutronCuts<T>::print(std::ostream& output) const{
 
     Cuts<T>::print(output);
-    output<<"\n"<<std::setw(16)<<std::left<<"Energy lower cut"<<": "<<std::setw(3)<<std::right<<energyLowCut<<"\n"
-      <<std::setw(16)<<std::left<<"Energy upper cut"<<": "<<std::setw(3)<<std::right<<energyUpCut;
+    output<<"\n"<<std::setw(12)<<std::left<<"Energy bounds"<<":\n";
+    for(auto it = energyBounds.begin(); it != energyBounds.end() - 1; ++it) output<<*it<<"\n";
+    output<<(*(energyBounds.end() - 1));
 
   }
   
