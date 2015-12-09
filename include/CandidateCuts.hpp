@@ -31,6 +31,13 @@ namespace CosmogenicHunter{
   CandidateCuts<T>::CandidateCuts(Flavour flavour, T IVChargeUpCut, double minimumTriggerTime, std::vector<unsigned> candidateIdentifiers)
   :Cuts<T>(flavour),IVChargeUpCut(IVChargeUpCut),minimumTriggerTime(minimumTriggerTime),candidateIdentifiers(candidateIdentifiers){
     
+    if(IVChargeUpCut < 0 || minimumTriggerTime < 0){
+      
+      auto errorMessage = std::to_string(IVChargeUpCut)+"DUQ and "+std::to_string(minimumTriggerTime)+"ns are not valid candidate cuts";
+      throw std::invalid_argument(errorMessage);
+      
+    }
+    
   }
     
   template <class T>

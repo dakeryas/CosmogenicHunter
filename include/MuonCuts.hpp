@@ -56,6 +56,8 @@ namespace CosmogenicHunter{
   MuonCuts<T>::MuonCuts(Flavour flavour, T IVChargeThreshold, T energyThreshold,  T energyToIDChargeFactor)
   :Cuts<T>(flavour),IVChargeThreshold(IVChargeThreshold),energyThreshold(energyThreshold),energyToIDChargeFactor(energyToIDChargeFactor),IDChargeThreshold(energyThreshold * energyToIDChargeFactor), IDChargeToEnergyFactor(1/energyToIDChargeFactor){
     
+    if(IVChargeThreshold < 0 || energyThreshold < 0 || energyToIDChargeFactor  < 0) throw std::invalid_argument("Invalid muon cuts parameters.");
+    
   }
 
   template <class T>

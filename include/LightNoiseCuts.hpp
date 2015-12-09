@@ -34,6 +34,8 @@ namespace CosmogenicHunter{
   LightNoiseCuts<T>::LightNoiseCuts(Flavour flavour, T maxRMS, T slopeRMS, T maxDifference, T maxRatio, double maxStartTimeRMS)
   :Cuts<T>(flavour),maxRMS(maxRMS),slopeRMS(slopeRMS),maxDifference(maxDifference),maxRatio(maxRatio),maxStartTimeRMS(maxStartTimeRMS){
     
+    if(maxRMS < 0 || slopeRMS < 0 || maxDifference  < 0 || maxRatio < 0 || maxRatio > 1 || maxStartTimeRMS <  0) throw std::invalid_argument("Invalid light noise parameters.");
+    
   }
 
   template <class T>
