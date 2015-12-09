@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
   double neutronWindowLenght;
   std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
   double candidateIVChargeUpCut;
-  std::vector<double> pairTimeCorrelationBounds(2);
+  CsHt::Bounds<double> pairTimeCorrelationBounds;
   double pairSpaceCorrelationUpCut;
   std::vector<double> lightNoiseParameters(5);
   
@@ -51,8 +51,8 @@ int main(int argc, char* argv[]){
   ("light-noise-cuts", bpo::fixed_tokens_value<double>(&lightNoiseParameters, 5, 5)->multitoken()->required(), "Light noise rejection parameters (max RMS charge, RMS slope, max charge difference, max charge ratio, max RMS start time)")
   ("candidate-IV-up-cut", bpo::value<double>(&candidateIVChargeUpCut)->required(), "Upper cut on the candidate's Inner Veto charge (DUQ)")
   ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
-  ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Bounds on the neutron's energy (MeV)")
-  ("pair-time-bounds", bpo::value<std::vector<double>>(&pairTimeCorrelationBounds)->multitoken()->required(), "Bounds on the prompt-delayed time correlation (ns)")
+  ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Variable number of bounds (':' separator) on the neutron's energy (MeV)")
+  ("pair-time-bounds", bpo::value<CsHt::Bounds<double>>(&pairTimeCorrelationBounds)->required(), "Bounds(':' separator) on the prompt-delayed time correlation (ns)")
   ("pair-space-up-cut", bpo::value<double>(&pairSpaceCorrelationUpCut)->required(), "Upper cut on the prompt-delayed space correlation (mm)");
   
   bpo::positional_options_description positionalOptions;//to use arguments without "--"
@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   catch(std::invalid_argument& error){
     
     std::cout<<"Error: "<<error.what()<<std::endl;
+    return 1;
     
   }
   
@@ -142,8 +143,8 @@ int main(int argc, char* argv[]){
 	return 1;
 	
       }
-      std::cout<<entrySorter<<std::endl;
-      CsHt::PairSeeker<float> pairSeeker(pairTimeCorrelationBounds[0], pairTimeCorrelationBounds[1], pairSpaceCorrelationUpCut);
+
+      CsHt::PairSeeker<float> pairSeeker(pairTimeCorrelationBounds, pairSpaceCorrelationUpCut);
       CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLenght, neutronWindowLenght);
       
     }
