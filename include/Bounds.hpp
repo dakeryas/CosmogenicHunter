@@ -117,17 +117,18 @@ namespace CosmogenicHunter{
   template <class T>
   std::istream& operator>>(std::istream& input, Bounds<T>& bounds){
   
-  std::string token;
-  input >> token;
+    std::string token;
+    input >> token;
+    
+    std::string number("[+-]?(?:\\d*\\.)?\\d+(?:[eE][-+]?[0-9]+)?");//decimal number with possible sign and exponent
+    std::regex regex("(^"+number+")[:,-]("+number+"$)");//start with a number :, seprator and end with another number
+    std::smatch regexMatches;
+    if(std::regex_search(token, regexMatches, regex)) bounds.setEdges(std::stod(regexMatches.str(1)), std::stod(regexMatches.str(2)));
+    else throw std::invalid_argument(token+" cannot be parsed to build bounds.");
+    
+    return input;
   
-  std::regex regex("(^[+-]?(?:\\d*\\.)?\\d+)[:,]([+-]?(?:\\d*\\.)?\\d+$)");//decimal number with sign :, seprator and another decimal number with sign
-  std::smatch regexMatches;
-  if(std::regex_search(token, regexMatches, regex)) bounds.setEdges(std::stod(regexMatches.str(1)), std::stod(regexMatches.str(2)));
-  else throw std::invalid_argument(token+" cannot be parsed to build bounds.");
-  
-  return input;
-  
-}
+  }
 
   template <class T>
   Bounds<T> shift(Bounds<T> bounds, const T& value){//returns a bounds shifted from 'value'
