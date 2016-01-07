@@ -3,7 +3,7 @@
 
 #include "boost/optional.hpp"
 #include "Cuts.hpp"
-#include "Bounds.hpp"
+#include "Cosmogenic/Bounds.hpp"
 
 namespace CosmogenicHunter{
 

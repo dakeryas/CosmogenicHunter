@@ -2,7 +2,7 @@
 #define COSMOGENIC_HUNTER_LIGHT_NOISE_CUTS_H
 
 #include "Cuts.hpp"
-#include "LightNoiseCutParameters.hpp"
+#include "Cosmogenic/LightNoiseCutParameters.hpp"
 
 namespace CosmogenicHunter{
 

@@ -2,7 +2,7 @@
 #define COSMOGENIC_HUNTER_PAIR_SEEKER_H
 
 #include "Cosmogenic/CandidatePair.hpp"
-#include "Bounds.hpp"
+#include "Cosmogenic/Bounds.hpp"
 
 namespace CosmogenicHunter{
 
@@ -30,7 +30,7 @@ namespace CosmogenicHunter{
   template <class T>
   bool PairSeeker<T>::isAdmissibleDelayed(const Single<T>& delayed) const{
     
-    return areTimeCorrelated(prompt, delayed, timeBounds.getLowEdge(), timeBounds.getUpEdge()) && areSpaceCorrelated(prompt, delayed, maxDistance);
+    return areTimeCorrelated(prompt, delayed, timeBounds) && areSpaceCorrelated(prompt, delayed, maxDistance);
     
   }
   

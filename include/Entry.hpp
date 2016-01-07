@@ -1,7 +1,7 @@
 #ifndef COSMOGENIC_HUNTER_ENTRY_H
 #define COSMOGENIC_HUNTER_ENTRY_H
 
-#include "ChargeData.hpp"
+#include "Cosmogenic/ChargeData.hpp"
 
 namespace CosmogenicHunter{
 
