@@ -153,7 +153,7 @@ namespace CosmogenicHunter{
   template <class T>
   bool MuonCuts<T>::accept(const Entry<T>& entry) const{
 
-    return entry.IVCharge > IVChargeThreshold && ( entry.energy > energyThreshold || entry.IDCharge > IDChargeThreshold);
+    return entry.innerVetoData.charge > IVChargeThreshold && ( entry.energy > energyThreshold || entry.IDCharge > IDChargeThreshold);
 
   }
   

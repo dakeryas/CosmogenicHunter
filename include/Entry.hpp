@@ -1,6 +1,7 @@
 #ifndef COSMOGENIC_HUNTER_ENTRY_H
 #define COSMOGENIC_HUNTER_ENTRY_H
 
+#include "Cosmogenic/InnerVetoData.hpp"
 #include "Cosmogenic/ChargeData.hpp"
 
 namespace CosmogenicHunter{
@@ -9,7 +10,7 @@ namespace CosmogenicHunter{
   struct Entry{//public for ROOT TTree's branches address
     
     double triggerTime;
-    T IVCharge;
+    InnerVetoData<T> innerVetoData;
     T IDCharge;
     T energy;
     unsigned identifier;
@@ -24,8 +25,8 @@ namespace CosmogenicHunter{
     auto formerPrecision = output.precision();
     output<<std::fixed;
     
-    output<<std::setw(12)<<std::right<<std::setprecision(0)<<entry.triggerTime<<" | "
-      <<std::setw(9)<<std::right<<entry.IVCharge<<" | "
+    output<<std::setw(13)<<std::right<<std::setprecision(0)<<entry.triggerTime<<" || "
+      <<std::setw(9)<<std::right<<entry.innerVetoData<<" || "
       <<std::setw(9)<<std::right<<entry.IDCharge<<" | "
       <<std::setw(6)<<std::right<<std::setprecision(2)<<entry.energy<<" | "
       <<std::setw(7)<<std::right<<entry.identifier<<" || "

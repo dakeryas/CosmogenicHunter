@@ -4,7 +4,8 @@ namespace CosmogenicHunter{
 
   void InfoAccessor::updateEntry(){
     
-    entry.IVCharge = IVCharge[2];//point to mini data value
+    entry.innerVetoData.charge = IVCharge[2];//point to mini data value
+    entry.innerVetoData.numberOfHitPMTs = numberOfHitIVPMTs[0];//RecoPulse value
     entry.IDCharge = IDCharge[2];
 
   }
@@ -15,6 +16,7 @@ namespace CosmogenicHunter{
     tree->SetBranchStatus("TrigTime", true);
     tree->SetBranchStatus("TriggerID", true);
     tree->SetBranchStatus("ChargeIV", true);
+    tree->SetBranchStatus("NhitIV", true);
     tree->SetBranchStatus("ChargeID", true);
     tree->SetBranchStatus("Vtx_BAMA", true);
     tree->SetBranchStatus("EvisID", true);
@@ -28,6 +30,7 @@ namespace CosmogenicHunter{
     tree->SetBranchAddress("TrigTime", &entry.triggerTime);
     tree->SetBranchAddress("TriggerID", &entry.identifier);
     tree->SetBranchAddress("ChargeIV", IVCharge);
+    tree->SetBranchAddress("NhitIV", numberOfHitIVPMTs);
     tree->SetBranchAddress("ChargeID", IDCharge);
     tree->SetBranchAddress("Vtx_BAMA", recoBAMAVertex);
     tree->SetBranchAddress("EvisID", &entry.energy);

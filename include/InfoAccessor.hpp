@@ -12,7 +12,9 @@ namespace CosmogenicHunter{
     
     TTree* tree;//not owned by InfoAccessor
     unsigned currentIndex;
+    
     double IVCharge[3];
+    unsigned short numberOfHitIVPMTs[2];
     double IDCharge[3];
     Entry<double> entry;//the actual TTree is written with double's only
     double trackMuHam[2][3];

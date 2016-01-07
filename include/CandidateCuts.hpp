@@ -85,7 +85,7 @@ namespace CosmogenicHunter{
   template <class T>
   bool CandidateCuts<T>::accept(const Entry<T>& entry) const{
 
-    return entry.IVCharge < IVChargeUpCut && entry.triggerTime > minimumTriggerTime && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
+    return entry.innerVetoData.charge < IVChargeUpCut && entry.triggerTime > minimumTriggerTime && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
 
   }
   

@@ -37,19 +37,19 @@ namespace CosmogenicHunter{
 
     auto entry = infoAccessor.getEntry();
     auto flavour = entrySorter.getFlavour(entry);
-
+    
     muonShowerWindow.setEndTime(entry.triggerTime + 1);
     
     if(flavour == Flavour::Muon){
       
       auto track = infoAccessor.getMuonTrack<MuonAccuracy>();
       if(track != Segment<MuonAccuracy>())
-	muonShowerWindow.emplaceEvent(Muon<MuonAccuracy>(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, track, entry.IDCharge), neutronWindowLenght);
+	muonShowerWindow.emplaceEvent(Muon<MuonAccuracy>(entry.triggerTime, entry.innerVetoData.charge, entry.energy, entry.identifier, track, entry.IDCharge), neutronWindowLenght);
     
     }
     else if(flavour == Flavour::Neutron){
       
-      Single<SingleAccuracy> neutron(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> neutron(entry.triggerTime, entry.innerVetoData.charge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
       pairSeeker.catchDelayed(neutron);
       
       if(pairSeeker.caughtDelayed()){
@@ -68,7 +68,7 @@ namespace CosmogenicHunter{
     }
     else if(flavour == Flavour::Candidate){
       
-      Single<SingleAccuracy> candidate(entry.triggerTime, entry.IVCharge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> candidate(entry.triggerTime, entry.innerVetoData.charge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
       pairSeeker.catchPrompt(candidate);
       
     }
