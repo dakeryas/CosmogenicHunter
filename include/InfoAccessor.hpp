@@ -4,6 +4,7 @@
 #include "TTree.h"
 #include "Entry.hpp"
 #include "Cosmogenic/Segment.hpp"
+#include "Cosmogenic/InnerVetoInformation.hpp"
 #include "Cosmogenic/ChargeInformation.hpp"
 
 namespace CosmogenicHunter{
@@ -34,6 +35,8 @@ namespace CosmogenicHunter{
     template <class T>
     Segment<T> getMuonTrack() const;
     template <class T>
+    InnerVetoInformation<T> getInnerVetoInformation() const;
+    template <class T>
     Point<T> getPosition() const;
     template <class T>
     T getReconstructionGoodness() const;
@@ -54,6 +57,13 @@ namespace CosmogenicHunter{
     Point<T> exitPoint(trackMuHam[1][0], trackMuHam[1][1], trackMuHam[1][2]);
 	
     return Segment<T> (entryPoint, exitPoint);
+
+  }
+  
+  template <class T>
+  InnerVetoInformation<T> InfoAccessor::getInnerVetoInformation() const{
+    
+    return InnerVetoInformation<T> (entry.innerVetoData.charge, entry.innerVetoData.numberOfHitPMTs);
 
   }
   

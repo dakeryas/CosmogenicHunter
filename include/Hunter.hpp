@@ -44,12 +44,12 @@ namespace CosmogenicHunter{
       
       auto track = infoAccessor.getMuonTrack<MuonAccuracy>();
       if(track != Segment<MuonAccuracy>())
-	muonShowerWindow.emplaceEvent(Muon<MuonAccuracy>(entry.triggerTime, entry.innerVetoData.charge, entry.energy, entry.identifier, track, entry.IDCharge), neutronWindowLenght);
+	muonShowerWindow.emplaceEvent(Muon<MuonAccuracy>(entry.triggerTime, entry.energy, entry.identifier, track, entry.innerVetoData.charge, entry.IDCharge), neutronWindowLenght);
     
     }
     else if(flavour == Flavour::Neutron){
       
-      Single<SingleAccuracy> neutron(entry.triggerTime, entry.innerVetoData.charge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> neutron(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
       pairSeeker.catchDelayed(neutron);
       
       if(pairSeeker.caughtDelayed()){
@@ -68,7 +68,7 @@ namespace CosmogenicHunter{
     }
     else if(flavour == Flavour::Candidate){
       
-      Single<SingleAccuracy> candidate(entry.triggerTime, entry.innerVetoData.charge, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> candidate(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
       pairSeeker.catchPrompt(candidate);
       
     }
