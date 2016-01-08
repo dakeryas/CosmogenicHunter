@@ -1,7 +1,6 @@
 #ifndef COSMOGENIC_HUNTER_NEUTRON_CUTS_H
 #define COSMOGENIC_HUNTER_NEUTRON_CUTS_H
 
-#include "boost/optional.hpp"
 #include "Cuts.hpp"
 #include "Cosmogenic/Bounds.hpp"
 
