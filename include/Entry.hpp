@@ -1,8 +1,8 @@
 #ifndef COSMOGENIC_HUNTER_ENTRY_H
 #define COSMOGENIC_HUNTER_ENTRY_H
 
-#include "Cosmogenic/InnerVetoData.hpp"
-#include "Cosmogenic/ChargeData.hpp"
+#include "InnerVetoData.hpp"
+#include "ChargeData.hpp"
 
 namespace CosmogenicHunter{
 
