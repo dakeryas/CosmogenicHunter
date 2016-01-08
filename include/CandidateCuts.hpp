@@ -21,7 +21,7 @@ namespace CosmogenicHunter{
     void setIVChargeUpCut(T IVChargeUpCut);
     void setMinimumTriggerTime(double minimumTriggerTime);
     void setCandidateIdentifiers(std::vector<unsigned> candidateIdentifiers);
-    bool accept(const Entry<T>& entry) const;
+    bool tag(const Entry<T>& entry) const;
     std::unique_ptr<Cuts<T>> clone() const;
     void print(std::ostream& output) const;
     
@@ -83,7 +83,7 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  bool CandidateCuts<T>::accept(const Entry<T>& entry) const{
+  bool CandidateCuts<T>::tag(const Entry<T>& entry) const{
 
     return entry.innerVetoData.charge < IVChargeUpCut && entry.triggerTime > minimumTriggerTime && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
 

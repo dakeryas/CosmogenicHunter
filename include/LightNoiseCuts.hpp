@@ -20,7 +20,7 @@ namespace CosmogenicHunter{
     T getMaxRatio() const;
     const LightNoiseCutParameters<T>& getLightNoiseCutParameters() const;
     void setLightNoiseCutParameters(LightNoiseCutParameters<T> lightNoiseCutParameters);
-    bool accept(const Entry<T>& entry) const;
+    bool tag(const Entry<T>& entry) const;
     std::unique_ptr<Cuts<T>> clone() const;
     void print(std::ostream& output) const;
     
@@ -47,9 +47,9 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  bool LightNoiseCuts<T>::accept(const Entry<T>& entry) const{
+  bool LightNoiseCuts<T>::tag(const Entry<T>& entry) const{
 
-    return lightNoiseCutParameters.accept(entry.chargeData);
+    return lightNoiseCutParameters.tag(entry.chargeData);
 
   }
   

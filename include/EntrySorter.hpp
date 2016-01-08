@@ -72,7 +72,7 @@ namespace CosmogenicHunter{
   template <class T>
   Flavour EntrySorter<T>::getFlavour(const Entry<T>& entry) const{
 
-    for(const auto& cutPtr : cuts) if(cutPtr->accept(entry)) return cutPtr->getFlavour();
+    for(const auto& cutPtr : cuts) if(cutPtr->tag(entry)) return cutPtr->getFlavour();
     
     return Flavour::Other;
 

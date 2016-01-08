@@ -30,7 +30,7 @@ namespace CosmogenicHunter{
     void setEnergyThreshold(T energyThreshold);
     void setIDChargeThreshold(T IDChargeThreshold);
     void setIDChargeToEnergyFactor(T IDChargeToEnergyFactor);
-    bool accept(const Entry<T>& entry) const;
+    bool tag(const Entry<T>& entry) const;
     T getEnergy(T IDCharge) const;
     T getIDCharge(T energy) const;
     std::unique_ptr<Cuts<T>> clone() const;
@@ -151,7 +151,7 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  bool MuonCuts<T>::accept(const Entry<T>& entry) const{
+  bool MuonCuts<T>::tag(const Entry<T>& entry) const{
 
     return entry.innerVetoData.charge > IVChargeThreshold && ( entry.energy > energyThreshold || entry.IDCharge > IDChargeThreshold);
 

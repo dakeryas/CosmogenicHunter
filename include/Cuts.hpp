@@ -7,7 +7,7 @@
 
 namespace CosmogenicHunter{
 
-  template <class T>//to accept entries saved with the accuracy of type T
+  template <class T>//to tag entries saved with the accuracy of type T
   class Cuts{
     Flavour flavour;
     
@@ -21,7 +21,7 @@ namespace CosmogenicHunter{
     Flavour getFlavour() const;
     void setFlavour(Flavour flavour);
     virtual ~Cuts() = default;//custom destructor implies to define (even if default-ed) all copy / move / assignement operations
-    virtual bool accept(const Entry<T>& entry) const = 0;//accept or reject the entry based on the chosen cuts
+    virtual bool tag(const Entry<T>& entry) const = 0;//tag or reject the entry based on the chosen cuts
     virtual std::unique_ptr<Cuts<T>> clone() const = 0;
     virtual void print(std::ostream& output) const;//needed to act as if 'operator<<' was virtual
     
