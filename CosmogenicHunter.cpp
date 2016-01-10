@@ -33,7 +33,7 @@ int main(int argc, char* argv[]){
   double IVChargeThreshold, visibleEnergyThreshold, energyToIDChargeFactor;
   double neutronWindowLenght;
   std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
-  double candidateIVChargeUpCut;
+  CsHt::InnerVetoThreshold<double> candidateInnerVetoThreshold;
   CsHt::Bounds<double> pairTimeCorrelationBounds;
   double pairSpaceCorrelationUpCut;
   CsHt::LightNoiseCutParameters<double> lightNoiseParameters;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
   ("muon-energy-cut", bpo::value<double>(&visibleEnergyThreshold)->required(), "Visible energy threshold for muons (MeV)")
   ("factor-muon-energy-to-ID-charge,f", bpo::value<double>(&energyToIDChargeFactor)->required(), "Conversion factor from muon visible energy to Inner Detector charge to (DUQ/MeV)")
   ("light-noise-cuts", bpo::value<CsHt::LightNoiseCutParameters<double>>(&lightNoiseParameters)->required(), "Light noise rejection parameters (max RMS charge : RMS slope : max charge difference : max charge ratio : max RMS start time)")
-  ("candidate-IV-up-cut", bpo::value<double>(&candidateIVChargeUpCut)->required(), "Upper cut on the candidate's Inner Veto charge (DUQ)")
+  ("candidate-IV-cuts", bpo::value<CsHt::InnerVetoThreshold<double>>(&candidateInnerVetoThreshold)->required(), "Inner Veto rejection parameters (max charge : max number of hit PMTs)")
   ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght (ns)")
   ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Variable number of bounds (':' separator) on the neutron's energy (MeV)")
   ("pair-time-bounds", bpo::value<CsHt::Bounds<double>>(&pairTimeCorrelationBounds)->required(), "Bounds(':' separator) on the prompt-delayed time correlation (ns)")
@@ -133,7 +133,7 @@ int main(int argc, char* argv[]){
 	
 	entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, IVChargeThreshold, visibleEnergyThreshold,  energyToIDChargeFactor));
 	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters));
-	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateIVChargeUpCut, muonWindowLenght, candidateIdentifiers));
+	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateInnerVetoThreshold, muonWindowLenght, candidateIdentifiers));
 	entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds));
 	
       }

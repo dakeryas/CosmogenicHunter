@@ -2,23 +2,24 @@
 #define COSMOGENIC_HUNTER_CANDIDATE_CUTS_H
 
 #include "Cuts.hpp"
+#include "Cosmogenic/InnerVetoThreshold.hpp"
 
 namespace CosmogenicHunter{
 
   template <class T>
   class CandidateCuts: public Cuts<T>{
     
-    T IVChargeUpCut;
+    InnerVetoThreshold<T> innerVetoThreshold;
     double minimumTriggerTime;//do not consider events too close to the begining of the run
     std::vector<unsigned> candidateIdentifiers;//ID's of the IBD candidates to decide whether the entry is a candidate
     
   public:
     CandidateCuts() = default;
-    CandidateCuts(Flavour flavour, T IVChargeUpCut, double minimumTriggerTime,std::vector<unsigned> candidateIdentifiers);
-    T getIVChargeUpCut() const;
+    CandidateCuts(Flavour flavour, const InnerVetoThreshold<T>& innerVetoThreshold, double minimumTriggerTime,std::vector<unsigned> candidateIdentifiers);
+    const InnerVetoThreshold<T>& getInnerVetoThreshold() const;
     double getMinimumTriggerTime() const;
     const std::vector<unsigned>& getCandidateIdentifiers() const;
-    void setIVChargeUpCut(T IVChargeUpCut);
+    void setInnerVetoThreshold(const InnerVetoThreshold<T>& innerVetoThreshold);
     void setMinimumTriggerTime(double minimumTriggerTime);
     void setCandidateIdentifiers(std::vector<unsigned> candidateIdentifiers);
     bool tag(const Entry<T>& entry) const;
@@ -28,22 +29,17 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  CandidateCuts<T>::CandidateCuts(Flavour flavour, T IVChargeUpCut, double minimumTriggerTime, std::vector<unsigned> candidateIdentifiers)
-  :Cuts<T>(flavour),IVChargeUpCut(IVChargeUpCut),minimumTriggerTime(minimumTriggerTime),candidateIdentifiers(candidateIdentifiers){
+  CandidateCuts<T>::CandidateCuts(Flavour flavour, const InnerVetoThreshold<T>& innerVetoThreshold, double minimumTriggerTime, std::vector<unsigned> candidateIdentifiers)
+  :Cuts<T>(flavour),innerVetoThreshold(innerVetoThreshold),minimumTriggerTime(minimumTriggerTime),candidateIdentifiers(candidateIdentifiers){
     
-    if(IVChargeUpCut < 0 || minimumTriggerTime < 0){
-      
-      auto errorMessage = std::to_string(IVChargeUpCut)+"DUQ and "+std::to_string(minimumTriggerTime)+"ns are not valid candidate cuts";
-      throw std::invalid_argument(errorMessage);
-      
-    }
+    if(minimumTriggerTime < 0) throw std::invalid_argument(std::to_string(minimumTriggerTime)+"ns are not valid candidate cuts");
     
   }
     
   template <class T>
-  T CandidateCuts<T>::getIVChargeUpCut() const{
+  const InnerVetoThreshold<T>& CandidateCuts<T>::getInnerVetoThreshold() const{
     
-    return IVChargeUpCut;
+    return innerVetoThreshold;
 
   }
   
@@ -69,9 +65,9 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  void CandidateCuts<T>::setIVChargeUpCut(T IVChargeUpCut){
+  void CandidateCuts<T>::setInnerVetoThreshold(const InnerVetoThreshold<T>& innerVetoThreshold){
     
-    if(IVChargeUpCut > 0) this->IVChargeUpCut = IVChargeUpCut;
+    if(innerVetoThreshold > 0) this->innerVetoThreshold = innerVetoThreshold;
 
   }
   
@@ -85,7 +81,7 @@ namespace CosmogenicHunter{
   template <class T>
   bool CandidateCuts<T>::tag(const Entry<T>& entry) const{
 
-    return entry.innerVetoData.charge < IVChargeUpCut && entry.triggerTime > minimumTriggerTime && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
+    return !innerVetoThreshold.tag(entry.innerVetoData) && entry.triggerTime > minimumTriggerTime && (std::find(candidateIdentifiers.begin(), candidateIdentifiers.end(), entry.identifier) !=  candidateIdentifiers.end());
 
   }
   
@@ -100,8 +96,8 @@ namespace CosmogenicHunter{
   void CandidateCuts<T>::print(std::ostream& output) const{
 
     Cuts<T>::print(output);
-    output<<"\n"<<std::setw(16)<<std::left<<"max IV Charge"<<": "<<std::setw(6)<<std::right<<IVChargeUpCut
-      <<"\n"<<std::setw(16)<<std::left<<"min trigger time"<<": "<<std::setw(6)<<std::right<<minimumTriggerTime
+    output<<"\n"<<std::setw(16)<<std::left<<"IV threshold"<<":\n"<<innerVetoThreshold
+      <<"\n"<<std::setw(16)<<std::left<<"Min trigger time"<<": "<<std::setw(6)<<std::right<<minimumTriggerTime
       <<"\n"<<std::setw(16)<<std::left<<"Candidate ID's"<<": ";
     for(auto identifier : candidateIdentifiers) output<<"\n"<<identifier;
 
