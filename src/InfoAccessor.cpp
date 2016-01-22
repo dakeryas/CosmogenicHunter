@@ -39,7 +39,7 @@ namespace CosmogenicHunter{
     tree->SetBranchAddress("Qratio", &entry.chargeData.ratio);
     tree->SetBranchAddress("RMSTstart", &entry.chargeData.startTimeRMS);
     tree->SetBranchAddress("Trk_MuHamID", trackMuHam);
-    tree->SetBranchAddress("Vtx_BAMAfuncV", &reconstructionGoodness);
+    tree->SetBranchAddress("Vtx_BAMAfuncV", &reconstructionInconsistency);
     
   }
   
@@ -73,13 +73,8 @@ namespace CosmogenicHunter{
   
   std::ostream& operator<<(std::ostream& output, const InfoAccessor& infoAccessor){
     
-    output<<std::setw(7)<<std::left<<"Index: "<<std::setw(10)<<std::left<<infoAccessor.getCurrentIndex()<<"\n"
-      <<std::setw(12)<<std::left<<"TriggerTime"<<" | "
-      <<std::setw(10)<<std::left<<"IVCharge"<<" | "
-      <<std::setw(10)<<std::left<<"IDCharge"<<" | "
-      <<std::setw(8)<<std::left<<"Energy"<<" | "
-      <<std::setw(8)<<std::left<<"Identifier\n"
-      <<infoAccessor.getEntry();
+    output<<std::setw(6)<<std::left<<"Index"<<": "<<std::setw(10)<<std::left<<infoAccessor.getCurrentIndex()<<"\n"
+      <<std::setw(6)<<std::left<<"Entry"<<": "<<infoAccessor.getEntry();
     return output;
     
   }

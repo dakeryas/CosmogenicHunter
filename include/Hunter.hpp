@@ -49,7 +49,7 @@ namespace CosmogenicHunter{
     }
     else if(flavour == Flavour::Neutron){
       
-      Single<SingleAccuracy> neutron(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> neutron(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPositionInformation<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
       pairSeeker.catchDelayed(neutron);
       
       if(pairSeeker.caughtDelayed()){
@@ -68,7 +68,7 @@ namespace CosmogenicHunter{
     }
     else if(flavour == Flavour::Candidate){
       
-      Single<SingleAccuracy> candidate(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      Single<SingleAccuracy> candidate(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPositionInformation<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
       pairSeeker.catchPrompt(candidate);
       
     }
