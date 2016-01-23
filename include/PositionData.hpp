@@ -20,7 +20,7 @@ namespace CosmogenicHunter{
     auto formerPrecision = output.precision();
     output<<std::fixed;
     
-    output<<std::setprecision(0)<<"("<<std::setw(4)<<std::right<<positionData.position[0]<<", "<<std::setw(5)<<std::right<<positionData.position[1]<<", "<<std::setw(5)<<std::right<<positionData.position[2]<<")"
+    output<<std::setprecision(0)<<"("<<std::setw(5)<<std::right<<positionData.position[0]<<", "<<std::setw(5)<<std::right<<positionData.position[1]<<", "<<std::setw(5)<<std::right<<positionData.position[2]<<")"
       <<" | "
       <<std::setprecision(2)<<std::setw(3)<<std::right<<positionData.inconsistency;
     
