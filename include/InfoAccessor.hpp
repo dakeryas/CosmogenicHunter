@@ -98,7 +98,7 @@ namespace CosmogenicHunter{
     }
     catch(std::invalid_argument& error){
      
-      std::cerr<<"Error: for event "<<entry.identifier<<" "<<error.what()<<std::endl;
+      std::cerr<<"Error: for event "<<entry.identifier<<": "<<error.what()<<std::endl;
       return ChargeInformation<T>{};
       
     }
@@ -115,7 +115,7 @@ namespace CosmogenicHunter{
     }
     catch(std::invalid_argument& error){
      
-      std::cerr<<"Error: for event "<<entry.identifier<<" "<<error.what()<<std::endl;
+      std::cerr<<"Error: for event "<<entry.identifier<<": "<<error.what()<<std::endl;
       return std::numeric_limits<T>::lowest();
       
     }
