@@ -75,20 +75,20 @@ int main(int argc, char* argv[]){
   }
   catch(bpo::error& error){
     
-    std::cout<<error.what()<<std::endl;
+    std::cerr<<error.what()<<std::endl;
     return 1;
     
   }
   catch(std::invalid_argument& error){
     
-    std::cout<<"Error: "<<error.what()<<std::endl;
+    std::cerr<<"Error: "<<error.what()<<std::endl;
     return 1;
     
   }
   
   if(!boost::filesystem::is_regular_file(mapPath)){
     
-    std::cout<<"Error: "<<mapPath<<" is not a regular file"<<std::endl;
+    std::cerr<<"Error: "<<mapPath<<" is not a regular file"<<std::endl;
     return 1;
     
   }
@@ -99,13 +99,13 @@ int main(int argc, char* argv[]){
     
     if(targetFile == nullptr){
       
-      std::cout<<"Error: "<<targetPath<<" cannot be opened"<<std::endl;
+      std::cerr<<"Error: "<<targetPath<<" cannot be opened"<<std::endl;
       return 1;
       
     }
     else if(runNumber == 0){
       
-      std::cout<<"Error: cannot deduce the run number from "<<targetPath<<std::endl;
+      std::cerr<<"Error: cannot deduce the run number from "<<targetPath<<std::endl;
       return 1;
       
     }
@@ -122,7 +122,7 @@ int main(int argc, char* argv[]){
       }
       catch(std::out_of_range& error){
 	
-	std::cout<<"Error: Run "<<runNumber<< " is not in the map of candidates"<<std::endl;
+	std::cerr<<"Error: Run "<<runNumber<< " is not in the map of candidates"<<std::endl;
 	return 1;
 	
       }
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]){
       }
       catch(std::invalid_argument& error){
 	
-	std::cout<<"Error: "<<error.what()<<std::endl;
+	std::cerr<<"Error: "<<error.what()<<std::endl;
 	return 1;
 	
       }

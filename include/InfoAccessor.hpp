@@ -91,14 +91,34 @@ namespace CosmogenicHunter{
   template <class T>
   ChargeInformation<T> InfoAccessor::getChargeInformation() const{
     
-    return ChargeInformation<T>(entry.chargeData.RMS, entry.chargeData.difference, entry.chargeData.ratio, entry.chargeData.startTimeRMS);
+    try{
+      
+      return ChargeInformation<T>(entry.chargeData.RMS, entry.chargeData.difference, entry.chargeData.ratio, entry.chargeData.startTimeRMS);
+      
+    }
+    catch(std::invalid_argument& error){
+     
+      std::cerr<<"Error: for event "<<entry.identifier<<" "<<error.what()<<std::endl;
+      return ChargeInformation<T>{};
+      
+    }
     
   }
   
   template <class T>
   T InfoAccessor::getChimneyInconsistencyRatio() const{
     
-    return PulseShapeInformation<T>(pulseShapeData.inconsistency, pulseShapeData.inconsistencyInChimney).getChimneyInconsistencyRatio();
+    try{
+      
+      return PulseShapeInformation<T>(pulseShapeData.inconsistency, pulseShapeData.inconsistencyInChimney).getChimneyInconsistencyRatio();
+      
+    }
+    catch(std::invalid_argument& error){
+     
+      std::cerr<<"Error: for event "<<entry.identifier<<" "<<error.what()<<std::endl;
+      return std::numeric_limits<T>::lowest();
+      
+    }
 
   }
   
