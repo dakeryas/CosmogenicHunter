@@ -33,7 +33,8 @@ namespace CosmogenicHunter{
     virtual ~InfoAccessor() = default;
     unsigned getCurrentIndex() const;
     const Entry<double>& getEntry() const;
-    
+    template <class T>
+    Flavour getFlavour(const EntrySorter<T>& entrySorter) const;//find current entry flavour using EntrySorter (visitor)
     template <class T>
     Segment<T> getMuonTrack() const;
     template <class T>
@@ -56,6 +57,12 @@ namespace CosmogenicHunter{
   
   std::ostream& operator<<(std::ostream& output, const InfoAccessor& infoAccessor);
 
+  template <class T>
+  Flavour InfoAccessor::getFlavour(const EntrySorter<T>& entrySorter) const{
+    
+    return entrySorter.getFlavour(entry);
+
+  }
 
   template <class T>
   Segment<T> InfoAccessor::getMuonTrack() const{

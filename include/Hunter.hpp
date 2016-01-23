@@ -35,10 +35,8 @@ namespace CosmogenicHunter{
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
   void Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy>::processCurrentEntry(InfoAccessor& infoAccessor, cereal::BinaryOutputArchive& outputArchive){
 
-    auto entry = infoAccessor.getEntry();
-    auto flavour = entrySorter.getFlavour(entry);
-    
-    muonShowerWindow.setEndTime(entry.triggerTime + 1);
+    auto flavour = infoAccessor.getFlavour(entrySorter);
+    muonShowerWindow.setEndTime(infoAccessor.getEntry().triggerTime + 1);
     
     if(flavour == Flavour::Muon){
       
