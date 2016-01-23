@@ -2,11 +2,12 @@
 #define COSMOGENIC_HUNTER_INFO_ACCESSOR_H
 
 #include "TTree.h"
-#include "Entry.hpp"
-#include "Cosmogenic/Segment.hpp"
-#include "Cosmogenic/InnerVetoInformation.hpp"
-#include "Cosmogenic/PositionInformation.hpp"
-#include "Cosmogenic/ChargeInformation.hpp"
+#include "EntrySorter.hpp"
+#include "PositionData.hpp"
+#include "PulseShapeData.hpp"
+#include "Cosmogenic/Muon.hpp"
+#include "Cosmogenic/Single.hpp"
+#include "Cosmogenic/PulseShapeInformation.hpp"
 
 namespace CosmogenicHunter{
 
@@ -20,8 +21,8 @@ namespace CosmogenicHunter{
     double IDCharge[3];
     Entry<double> entry;//the actual TTree is written with double's only
     double trackMuHam[2][3];
-    double recoBAMAVertex[3];
-    double reconstructionInconsistency;
+    PositionData<double> positionData;//RecoBAMA reconstructed data
+    PulseShapeData<float> pulseShapeData;//CPS variables
     void updateEntry();//set entry members to the C-array values
     
   public:
@@ -41,6 +42,13 @@ namespace CosmogenicHunter{
     PositionInformation<T> getPositionInformation() const;
     template <class T>
     ChargeInformation<T> getChargeInformation() const;
+    template <class T>
+    T getChimneyInconsistencyRatio() const;
+    template <class T>
+    Muon<T> getAsMuon() const;
+    template <class T>
+    Single<T> getAsSingle() const;
+    
     bool loadInfo();//write all infos from the tree into the data members, return false at the tree's end
     void reset();//return to start index
     
@@ -69,7 +77,7 @@ namespace CosmogenicHunter{
   template <class T>
   PositionInformation<T> InfoAccessor::getPositionInformation() const{
     
-    return PositionInformation<T>(Point<T>(recoBAMAVertex[0], recoBAMAVertex[1], recoBAMAVertex[2]), reconstructionInconsistency);
+    return PositionInformation<T>(Point<T>(positionData.position[0], positionData.position[1], positionData.position[2]),  positionData.inconsistency);
 
   }
   
@@ -78,6 +86,27 @@ namespace CosmogenicHunter{
     
     return ChargeInformation<T>(entry.chargeData.RMS, entry.chargeData.difference, entry.chargeData.ratio, entry.chargeData.startTimeRMS);
     
+  }
+  
+  template <class T>
+  T InfoAccessor::getChimneyInconsistencyRatio() const{
+    
+    return PulseShapeInformation<T>(pulseShapeData.inconsistency, pulseShapeData.inconsistencyInChimney).getChimneyInconsistencyRatio();
+
+  }
+  
+  template <class T>
+  Muon<T> InfoAccessor::getAsMuon() const{
+    
+    return Muon<T>(entry.triggerTime, entry.energy, entry.identifier, getMuonTrack<T>(), entry.innerVetoData.charge, entry.IDCharge);
+
+  }
+  
+  template <class T>
+  Single<T> InfoAccessor::getAsSingle() const{
+    
+    return Single<T>(entry.triggerTime, entry.energy, entry.identifier, getPositionInformation<T>(), getInnerVetoInformation<T>(), getChargeInformation<T>(), getChimneyInconsistencyRatio<T>());
+
   }
   
 }

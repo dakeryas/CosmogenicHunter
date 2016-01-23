@@ -26,20 +26,24 @@ namespace CosmogenicHunter{
     tree->SetBranchStatus("RMSTstart", true);
     tree->SetBranchStatus("Trk_MuHamID", true);
     tree->SetBranchStatus("Vtx_BAMAfuncV", true);
+    tree->SetBranchStatus("SMLikelihoodVTX", true);
+    tree->SetBranchStatus("SMLikelihoodChimney", true);
     
     tree->SetBranchAddress("TrigTime", &entry.triggerTime);
     tree->SetBranchAddress("TriggerID", &entry.identifier);
     tree->SetBranchAddress("ChargeIV", IVCharge);
     tree->SetBranchAddress("NhitIV", numberOfHitIVPMTs);
     tree->SetBranchAddress("ChargeID", IDCharge);
-    tree->SetBranchAddress("Vtx_BAMA", recoBAMAVertex);
+    tree->SetBranchAddress("Vtx_BAMA", positionData.position);
     tree->SetBranchAddress("EvisID", &entry.energy);
     tree->SetBranchAddress("QRMS", &entry.chargeData.RMS);
     tree->SetBranchAddress("Qdiff", &entry.chargeData.difference);
     tree->SetBranchAddress("Qratio", &entry.chargeData.ratio);
     tree->SetBranchAddress("RMSTstart", &entry.chargeData.startTimeRMS);
     tree->SetBranchAddress("Trk_MuHamID", trackMuHam);
-    tree->SetBranchAddress("Vtx_BAMAfuncV", &reconstructionInconsistency);
+    tree->SetBranchAddress("Vtx_BAMAfuncV", &positionData.inconsistency);
+    tree->SetBranchAddress("SMLikelihoodVTX", &pulseShapeData.inconsistency);
+    tree->SetBranchAddress("SMLikelihoodChimney", &pulseShapeData.inconsistencyInChimney);
     
   }
   
