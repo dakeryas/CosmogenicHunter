@@ -3,6 +3,7 @@
 
 #include "InnerVetoData.hpp"
 #include "ChargeData.hpp"
+#include "PositionData.hpp"
 
 namespace CosmogenicHunter{
 
@@ -10,10 +11,11 @@ namespace CosmogenicHunter{
   struct Entry{//public for ROOT TTree's branches address
     
     double triggerTime;
-    InnerVetoData<T> innerVetoData;
-    T IDCharge;
     T energy;
     unsigned identifier;
+    InnerVetoData<T> innerVetoData;
+    T IDCharge;
+    PositionData<T> positionData;//RecoBAMA reconstructed data
     ChargeData<T> chargeData;
     Entry() = default;
     
@@ -30,7 +32,8 @@ namespace CosmogenicHunter{
       <<std::setw(9)<<std::right<<entry.IDCharge<<" | "
       <<std::setw(6)<<std::right<<std::setprecision(2)<<entry.energy<<" | "
       <<std::setw(7)<<std::right<<entry.identifier<<" || "
-      <<std::setw(4*7)<<std::setprecision(0)<<entry.chargeData;
+      <<entry.positionData<<" || "
+      <<entry.chargeData;
       
     output<<std::setprecision(formerPrecision);
     return output;

@@ -3,7 +3,7 @@
 
 #include "TTree.h"
 #include "EntrySorter.hpp"
-#include "PositionData.hpp"
+
 #include "PulseShapeData.hpp"
 #include "Cosmogenic/Muon.hpp"
 #include "Cosmogenic/Single.hpp"
@@ -19,9 +19,8 @@ namespace CosmogenicHunter{
     double IVCharge[3];
     unsigned short numberOfHitIVPMTs[2];
     double IDCharge[3];
-    Entry<double> entry;//the actual TTree is written with double's only
+    Entry<double> entry;//the actual TTree is written with double's mostly
     double trackMuHam[2][3];
-    PositionData<double> positionData;//RecoBAMA reconstructed data
     PulseShapeData<float> pulseShapeData;//CPS variables
     void updateEntry();//set entry members to the C-array values
     
@@ -34,6 +33,7 @@ namespace CosmogenicHunter{
     virtual ~InfoAccessor() = default;
     unsigned getCurrentIndex() const;
     const Entry<double>& getEntry() const;
+    
     template <class T>
     Segment<T> getMuonTrack() const;
     template <class T>
@@ -63,7 +63,7 @@ namespace CosmogenicHunter{
     Point<T> entryPoint(trackMuHam[0][0], trackMuHam[0][1], trackMuHam[0][2]);
     Point<T> exitPoint(trackMuHam[1][0], trackMuHam[1][1], trackMuHam[1][2]);
     
-    return Segment<T>(entryPoint, exitPoint);
+    return Segment<T>(std::move(entryPoint), std::move(exitPoint));
 
   }
   
@@ -77,7 +77,7 @@ namespace CosmogenicHunter{
   template <class T>
   PositionInformation<T> InfoAccessor::getPositionInformation() const{
     
-    return PositionInformation<T>(Point<T>(positionData.position[0], positionData.position[1], positionData.position[2]),  positionData.inconsistency);
+    return PositionInformation<T>(Point<T>(entry.positionData.position[0], entry.positionData.position[1], entry.positionData.position[2]),  entry.positionData.inconsistency);
 
   }
   

@@ -14,34 +14,34 @@ namespace CosmogenicHunter{
     
     tree->SetBranchStatus("*", false);
     tree->SetBranchStatus("TrigTime", true);
+    tree->SetBranchStatus("EvisID", true);
     tree->SetBranchStatus("TriggerID", true);
     tree->SetBranchStatus("ChargeIV", true);
     tree->SetBranchStatus("NhitIV", true);
     tree->SetBranchStatus("ChargeID", true);
     tree->SetBranchStatus("Vtx_BAMA", true);
-    tree->SetBranchStatus("EvisID", true);
+    tree->SetBranchStatus("Vtx_BAMAfuncV", true);
     tree->SetBranchStatus("QRMS", true);
     tree->SetBranchStatus("Qdiff", true);
     tree->SetBranchStatus("Qratio", true);
     tree->SetBranchStatus("RMSTstart", true);
     tree->SetBranchStatus("Trk_MuHamID", true);
-    tree->SetBranchStatus("Vtx_BAMAfuncV", true);
     tree->SetBranchStatus("SMLikelihoodVTX", true);
     tree->SetBranchStatus("SMLikelihoodChimney", true);
     
     tree->SetBranchAddress("TrigTime", &entry.triggerTime);
+    tree->SetBranchAddress("EvisID", &entry.energy);
     tree->SetBranchAddress("TriggerID", &entry.identifier);
     tree->SetBranchAddress("ChargeIV", IVCharge);
     tree->SetBranchAddress("NhitIV", numberOfHitIVPMTs);
     tree->SetBranchAddress("ChargeID", IDCharge);
-    tree->SetBranchAddress("Vtx_BAMA", positionData.position);
-    tree->SetBranchAddress("EvisID", &entry.energy);
+    tree->SetBranchAddress("Vtx_BAMA", entry.positionData.position);
+    tree->SetBranchAddress("Vtx_BAMAfuncV", &entry.positionData.inconsistency);
     tree->SetBranchAddress("QRMS", &entry.chargeData.RMS);
     tree->SetBranchAddress("Qdiff", &entry.chargeData.difference);
     tree->SetBranchAddress("Qratio", &entry.chargeData.ratio);
     tree->SetBranchAddress("RMSTstart", &entry.chargeData.startTimeRMS);
     tree->SetBranchAddress("Trk_MuHamID", trackMuHam);
-    tree->SetBranchAddress("Vtx_BAMAfuncV", &positionData.inconsistency);
     tree->SetBranchAddress("SMLikelihoodVTX", &pulseShapeData.inconsistency);
     tree->SetBranchAddress("SMLikelihoodChimney", &pulseShapeData.inconsistencyInChimney);
     
