@@ -14,10 +14,6 @@ namespace CosmogenicHunter{
   public:
     LightNoiseCuts() = default;
     LightNoiseCuts(Flavour flavour, LightNoiseCutParameters<T> lightNoiseCutParameters);
-    T getMaxRMS() const;
-    T getSlopeRMS() const;
-    T getMaxDifference() const;
-    T getMaxRatio() const;
     const LightNoiseCutParameters<T>& getLightNoiseCutParameters() const;
     void setLightNoiseCutParameters(LightNoiseCutParameters<T> lightNoiseCutParameters);
     bool tag(const Entry<T>& entry) const;
