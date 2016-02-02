@@ -9,6 +9,15 @@ namespace CosmogenicHunter{
     
     unsigned getRunNumber(const std::string& targetStem);
     
+    template <class T>
+    std::string to_string(const T& object) {
+      
+      std::ostringstream output;
+      output<<object;
+      return output.str();
+      
+    }
+    
   }
 
 }

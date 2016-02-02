@@ -2,6 +2,7 @@
 #define COSMOGENIC_HUNTER_NEUTRON_CUTS_H
 
 #include "Cuts.hpp"
+#include "Utility.hpp"
 #include "Cosmogenic/Bounds.hpp"
 
 namespace CosmogenicHunter{
@@ -26,6 +27,9 @@ namespace CosmogenicHunter{
   NeutronCuts<T>::NeutronCuts(Flavour flavour, std::vector<Bounds<T>> energyBounds)
   :Cuts<T>(flavour),energyBounds(std::move(energyBounds)){
     
+    for(const auto& energyBound : energyBounds)      
+      if(energyBound.hasNegativeEdge()) throw std::invalid_argument(Utility::to_string(energyBound)+"are invalid energy bounds.");
+    
   }
 
   template <class T>
@@ -39,6 +43,8 @@ namespace CosmogenicHunter{
   void NeutronCuts<T>::setEnergyBounds(std::vector<Bounds<T>> energyBounds){
     
     this->energyBounds = std::move(energyBounds);
+    for(const auto& energyBound : energyBounds)      
+      if(energyBound.hasNegativeEdge()) throw std::invalid_argument(Utility::to_string(energyBound)+"are invalid energy bounds.");
 
   }
   
