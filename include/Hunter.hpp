@@ -40,9 +40,9 @@ namespace CosmogenicHunter{
     
     if(flavour == Flavour::Muon){
       
-      auto track = infoAccessor.getMuonTrack<MuonAccuracy>();
-      if(track != Segment<MuonAccuracy>())
-	muonShowerWindow.emplaceEvent(infoAccessor.getAsMuon<MuonAccuracy>(), neutronWindowLenght);
+      auto muon = infoAccessor.getAsMuon<MuonAccuracy>();
+      if(muon.getTrack() != Segment<MuonAccuracy>())
+	muonShowerWindow.emplaceEvent(std::move(muon), neutronWindowLenght);
     
     }
     else if(flavour == Flavour::Neutron){
