@@ -16,13 +16,9 @@ namespace CosmogenicHunter{
     TTree* tree;//not owned by InfoAccessor
     unsigned currentIndex;
     
-    double IVCharge[3];
-    unsigned short numberOfHitIVPMTs[2];
-    double IDCharge[3];
     Entry<double> entry;//the actual TTree is written with double's mostly
     double trackMuHam[2][3];
     PulseShapeData<float> pulseShapeData;//CPS variables
-    void updateEntry();//set entry members to the C-array values
     
   public:
     explicit InfoAccessor(TTree* tree);//unfortunately the ROOT reading methods modify the state of TTree
@@ -38,7 +34,11 @@ namespace CosmogenicHunter{
     template <class T>
     Segment<T> getMuonTrack() const;
     template <class T>
+    Point<T> getPositionInnerVeto() const;
+    template <class T>
     InnerVetoInformation<T> getInnerVetoInformation() const;
+    template <class T>
+    Point<T> getPosition() const;
     template <class T>
     PositionInformation<T> getPositionInformation() const;
     template <class T>
@@ -75,16 +75,32 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
+  Point<T> InfoAccessor::getPositionInnerVeto() const{
+    
+    return Point<T>(entry.innerVetoData.position[0], entry.innerVetoData.position[2], entry.innerVetoData.position[2]);
+
+  }
+  
+  template <class T>
   InnerVetoInformation<T> InfoAccessor::getInnerVetoInformation() const{
     
-    return InnerVetoInformation<T>(entry.innerVetoData.charge, entry.innerVetoData.numberOfHitPMTs);
+    auto timeIntervalDetectorVeto = entry.innerDetectorData.startTime[0] - entry.innerVetoData.startTime[0];
+    auto distanceDetectorVeto = getDistanceBetween(getPosition<T>(), getPositionInnerVeto<T>());
+    return InnerVetoInformation<T>(entry.innerVetoData.charge[0], entry.innerVetoData.numberOfHitPMTs[0], timeIntervalDetectorVeto, distanceDetectorVeto);//use RecoPulse charge for Single's
+
+  }
+  
+  template <class T>
+  Point<T> InfoAccessor::getPosition() const{
+    
+    return Point<T>(entry.innerDetectorData.positionData.position[0], entry.innerDetectorData.positionData.position[1], entry.innerDetectorData.positionData.position[2]);
 
   }
   
   template <class T>
   PositionInformation<T> InfoAccessor::getPositionInformation() const{
     
-    return PositionInformation<T>(Point<T>(entry.positionData.position[0], entry.positionData.position[1], entry.positionData.position[2]),  entry.positionData.inconsistency);
+    return PositionInformation<T>(getPosition<T>(),  entry.innerDetectorData.positionData.inconsistency);
 
   }
   
@@ -125,7 +141,7 @@ namespace CosmogenicHunter{
   template <class T>
   Muon<T> InfoAccessor::getAsMuon() const{
     
-    return Muon<T>(entry.triggerTime, entry.energy, entry.identifier, getMuonTrack<T>(), entry.innerVetoData.charge, entry.IDCharge);
+    return Muon<T>(entry.triggerTime, entry.energy, entry.identifier, getMuonTrack<T>(), entry.innerVetoData.charge[2], entry.innerDetectorData.charge[2]);//use Mini Data charge for Muons
 
   }
   
