@@ -100,7 +100,17 @@ namespace CosmogenicHunter{
   template <class T>
   PositionInformation<T> InfoAccessor::getPositionInformation() const{
     
-    return PositionInformation<T>(getPosition<T>(),  entry.innerDetectorData.positionData.inconsistency);
+    try{
+    
+      return PositionInformation<T>(getPosition<T>(),  entry.innerDetectorData.positionData.inconsistency);
+      
+    }
+    catch(std::invalid_argument& error){
+     
+      std::cerr<<"Error: for event "<<entry.identifier<<": "<<error.what()<<std::endl;
+      return PositionInformation<T>{getPosition<T>(), 0};
+      
+    }
 
   }
   
