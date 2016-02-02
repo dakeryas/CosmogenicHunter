@@ -33,7 +33,6 @@ int main(int argc, char* argv[]){
   CsHt::MuonDefinition<double> muonDefinition;
   double neutronWindowLenght;
   std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
-  CsHt::InnerVetoThreshold<double> candidateInnerVetoThreshold;
   CsHt::Bounds<double> pairTimeCorrelationBounds;
   double pairSpaceCorrelationUpCut;
   CsHt::LightNoiseCutParameters<double> lightNoiseParameters;
@@ -47,7 +46,6 @@ int main(int argc, char* argv[]){
   ("muon-window-lenght", bpo::value<double>(&muonWindowLenght)->required(), "Muon window lenght [ns]")
   ("muon-definition", bpo::value<CsHt::MuonDefinition<double>>(&muonDefinition)->required(), "Muon definition parameters (Inner Veto charge threshold [DUQ] : visible energy threshold [MeV] : visible energy to Inner Detector charge conversion factor [DUQ/MeV])")
   ("light-noise-cuts", bpo::value<CsHt::LightNoiseCutParameters<double>>(&lightNoiseParameters)->required(), "Light noise rejection parameters (max RMS charge [DUQ]: RMS slope [DUQ/ns]: max charge difference [DUQ]: max charge ratio : max RMS start time [ns])")
-  ("candidate-IV-cuts", bpo::value<CsHt::InnerVetoThreshold<double>>(&candidateInnerVetoThreshold)->required(), "Inner Veto rejection parameters (max charge [DUQ] : max number of hit PMTs)")
   ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght [ns]")
   ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Variable number of bounds (':' separator) on the neutron's energy [MeV]")
   ("pair-time-bounds", bpo::value<CsHt::Bounds<double>>(&pairTimeCorrelationBounds)->required(), "Bounds(':' separator) on the prompt-delayed time correlation [ns]")
@@ -131,7 +129,7 @@ int main(int argc, char* argv[]){
 	
 	entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, muonDefinition));
 	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters));
-	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, candidateInnerVetoThreshold, muonWindowLenght, candidateIdentifiers));
+	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, muonWindowLenght, candidateIdentifiers));
 	entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds));
 	
       }
