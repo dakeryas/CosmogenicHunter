@@ -19,6 +19,7 @@ namespace CosmogenicHunter{
     Entry<double> entry;//the actual TTree is written with double's mostly
     double trackMuHam[2][3];
     PulseShapeData<float> pulseShapeData;//CPS variables
+    float cosmogenicLikelihood[3];
     
   public:
     explicit InfoAccessor(TTree* tree);//unfortunately the ROOT reading methods modify the state of TTree
@@ -158,7 +159,7 @@ namespace CosmogenicHunter{
   template <class T>
   Single<T> InfoAccessor::getAsSingle() const{
     
-    return Single<T>(entry.triggerTime, entry.energy, entry.identifier, getPositionInformation<T>(), getInnerVetoInformation<T>(), getChargeInformation<T>(), getChimneyInconsistencyRatio<T>());
+    return Single<T>(entry.triggerTime, entry.energy, entry.identifier, getPositionInformation<T>(), getInnerVetoInformation<T>(), getChargeInformation<T>(), getChimneyInconsistencyRatio<T>(), cosmogenicLikelihood[1]);
 
   }
   

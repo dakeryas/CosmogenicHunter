@@ -23,6 +23,7 @@ namespace CosmogenicHunter{
     tree->SetBranchStatus("Trk_MuHamID", true);
     tree->SetBranchStatus("SMLikelihoodVTX", true);
     tree->SetBranchStatus("SMLikelihoodChimney", true);
+    tree->SetBranchStatus("LiHeLike", true);
     
     tree->SetBranchAddress("TrigTime", &entry.triggerTime);
     tree->SetBranchAddress("EvisID", &entry.energy);
@@ -42,6 +43,7 @@ namespace CosmogenicHunter{
     tree->SetBranchAddress("Trk_MuHamID", trackMuHam);
     tree->SetBranchAddress("SMLikelihoodVTX", &pulseShapeData.inconsistency);
     tree->SetBranchAddress("SMLikelihoodChimney", &pulseShapeData.inconsistencyInChimney);
+    tree->SetBranchAddress("LiHeLike", cosmogenicLikelihood);
     
   }
   
