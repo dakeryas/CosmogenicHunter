@@ -78,7 +78,7 @@ namespace CosmogenicHunter{
   template <class T>
   Point<T> InfoAccessor::getPositionInnerVeto() const{
     
-    return Point<T>(entry.innerVetoData.position[0], entry.innerVetoData.position[2], entry.innerVetoData.position[2]);
+    return Point<T>(entry.innerVetoData.position[0], entry.innerVetoData.position[1], entry.innerVetoData.position[2]);
 
   }
   
