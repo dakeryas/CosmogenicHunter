@@ -22,7 +22,7 @@ namespace CosmogenicHunter{
     auto formerPrecision = output.precision();
     output<<std::fixed;
     
-    output<<std::setprecision(0)<<std::setw(9)<<std::right<<innerVetoData.charge[2]<<" | "
+    output<<std::setprecision(0)<<std::setw(9)<<std::right<<innerVetoData.charge[0]<<" | "
       <<std::setw(3)<<std::right<<innerVetoData.numberOfHitPMTs[0]<<" | "
       <<std::setw(3)<<std::right<<innerVetoData.startTime[0]<<" | "
       <<"("<<std::setw(5)<<std::right<<innerVetoData.position[0]<<", "<<std::setw(5)<<std::right<<innerVetoData.position[1]<<", "<<std::setw(5)<<std::right<<innerVetoData.position[2]<<")";
