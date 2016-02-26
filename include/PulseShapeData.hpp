@@ -8,11 +8,16 @@ namespace CosmogenicHunter{
   template <class T>
   struct PulseShapeData{
     
-    T inconsistency;//minus log (pulse shape likelihood at reconstruction positon)
+    T inconsistency;//minus log (pulse shape likelihood at reconstruction position)
     T inconsistencyInChimney;//minus log (pulse shape likelihood in the chimney)
-    PulseShapeData() = default;
+    PulseShapeData();
     
   };
+  
+  template <class T>
+  PulseShapeData<T>::PulseShapeData():inconsistency(1), inconsistencyInChimney(std::numeric_limits<T>::max()){
+    
+  }
   
   template <class T>
   std::ostream& operator<<(std::ostream& output, const PulseShapeData<T>& pulseShapeData){
