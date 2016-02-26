@@ -19,10 +19,12 @@ namespace CosmogenicHunter{
     auto formerPrecision = output.precision();
     output<<std::fixed;
     
-    output<<std::setw(5)<<std::right<<chargeData.RMS<<" | "
+    output<<std::setw(5)<<std::right<<std::setprecision(0)<<chargeData.RMS<<" | "
       <<std::setw(7)<<std::right<<chargeData.difference<<" | "
       <<std::setw(3)<<std::right<<std::setprecision(2)<<chargeData.ratio<<" | "
-      <<std::setw(3)<<std::right<<std::setprecision(formerPrecision)<<chargeData.startTimeRMS;
+      <<std::setw(3)<<std::right<<std::setprecision(0)<<chargeData.startTimeRMS;
+      
+    output<<std::setprecision(formerPrecision);
     return output;
       
   };

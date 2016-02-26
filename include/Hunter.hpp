@@ -35,21 +35,19 @@ namespace CosmogenicHunter{
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
   void Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy>::processCurrentEntry(InfoAccessor& infoAccessor, cereal::BinaryOutputArchive& outputArchive){
 
-    auto entry = infoAccessor.getEntry();
-    auto flavour = entrySorter.getFlavour(entry);
-    
-    muonShowerWindow.setEndTime(entry.triggerTime + 1);
+    auto flavour = infoAccessor.getFlavour(entrySorter);
+    muonShowerWindow.setEndTime(infoAccessor.getEntry().triggerTime + 1);
     
     if(flavour == Flavour::Muon){
       
-      auto track = infoAccessor.getMuonTrack<MuonAccuracy>();
-      if(track != Segment<MuonAccuracy>())
-	muonShowerWindow.emplaceEvent(Muon<MuonAccuracy>(entry.triggerTime, entry.energy, entry.identifier, track, entry.innerVetoData.charge, entry.IDCharge), neutronWindowLenght);
+      auto muon = infoAccessor.getAsMuon<MuonAccuracy>();
+      if(muon.getTrack() != Segment<MuonAccuracy>())
+	muonShowerWindow.emplaceEvent(std::move(muon), neutronWindowLenght);
     
     }
     else if(flavour == Flavour::Neutron){
       
-      Single<SingleAccuracy> neutron(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
+      auto neutron = infoAccessor.getAsSingle<SingleAccuracy>();
       pairSeeker.catchDelayed(neutron);
       
       if(pairSeeker.caughtDelayed()){
@@ -66,12 +64,7 @@ namespace CosmogenicHunter{
       }
       
     }
-    else if(flavour == Flavour::Candidate){
-      
-      Single<SingleAccuracy> candidate(entry.triggerTime, entry.energy, entry.identifier, infoAccessor.getPosition<SingleAccuracy>(), infoAccessor.getReconstructionGoodness<SingleAccuracy>(), infoAccessor.getInnerVetoInformation<SingleAccuracy>(), infoAccessor.getChargeInformation<SingleAccuracy>());
-      pairSeeker.catchPrompt(candidate);
-      
-    }
+    else if(flavour == Flavour::Candidate) pairSeeker.catchPrompt(infoAccessor.getAsSingle<SingleAccuracy>());
     
   }
   
