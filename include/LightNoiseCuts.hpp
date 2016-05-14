@@ -2,20 +2,20 @@
 #define COSMOGENIC_HUNTER_LIGHT_NOISE_CUTS_H
 
 #include "Cuts.hpp"
-#include "Cosmogenic/LightNoiseCutParameters.hpp"
+#include "Cosmogenic/LightNoiseVeto.hpp"
 
 namespace CosmogenicHunter{
 
   template <class T>
   class LightNoiseCuts: public Cuts<T>{
     
-    LightNoiseCutParameters<T> lightNoiseCutParameters;
+    LightNoiseVeto<T> lightNoiseVeto;
 
   public:
     LightNoiseCuts() = default;
-    LightNoiseCuts(Flavour flavour, LightNoiseCutParameters<T> lightNoiseCutParameters);
-    const LightNoiseCutParameters<T>& getLightNoiseCutParameters() const;
-    void setLightNoiseCutParameters(LightNoiseCutParameters<T> lightNoiseCutParameters);
+    LightNoiseCuts(Flavour flavour, LightNoiseVeto<T> lightNoiseVeto);
+    const LightNoiseVeto<T>& getLightNoiseVeto() const;
+    void setLightNoiseVeto(LightNoiseVeto<T> lightNoiseVeto);
     bool tag(const Entry<T>& entry) const;
     std::unique_ptr<Cuts<T>> clone() const;
     void print(std::ostream& output) const;
@@ -23,29 +23,29 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  LightNoiseCuts<T>::LightNoiseCuts(Flavour flavour, LightNoiseCutParameters<T> lightNoiseCutParameters)
-  :Cuts<T>(flavour),lightNoiseCutParameters(std::move(lightNoiseCutParameters)){
+  LightNoiseCuts<T>::LightNoiseCuts(Flavour flavour, LightNoiseVeto<T> lightNoiseVeto)
+  :Cuts<T>(flavour),lightNoiseVeto(std::move(lightNoiseVeto)){
     
   }
 
   template <class T>
-  const LightNoiseCutParameters<T>& LightNoiseCuts<T>::getLightNoiseCutParameters() const{
+  const LightNoiseVeto<T>& LightNoiseCuts<T>::getLightNoiseVeto() const{
     
-    return lightNoiseCutParameters;
+    return lightNoiseVeto;
 
   }
   
   template <class T>
-  void LightNoiseCuts<T>::setLightNoiseCutParameters(LightNoiseCutParameters<T> lightNoiseCutParameters){
+  void LightNoiseCuts<T>::setLightNoiseVeto(LightNoiseVeto<T> lightNoiseVeto){
     
-    this->lightNoiseCutParameters = std::move(lightNoiseCutParameters);
+    this->lightNoiseVeto = std::move(lightNoiseVeto);
 
   }
   
   template <class T>
   bool LightNoiseCuts<T>::tag(const Entry<T>& entry) const{
 
-    return lightNoiseCutParameters.tag(entry.chargeData);
+    return lightNoiseVeto.tag(entry.chargeData);
 
   }
   
@@ -60,7 +60,7 @@ namespace CosmogenicHunter{
   void LightNoiseCuts<T>::print(std::ostream& output) const{
 
     Cuts<T>::print(output);
-    output<<"\n"<<lightNoiseCutParameters;
+    output<<"\n"<<lightNoiseVeto;
 
   }
   

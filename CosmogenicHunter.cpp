@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
   std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
   CsHt::Bounds<double> pairTimeCorrelationBounds;
   double pairSpaceCorrelationUpCut;
-  CsHt::LightNoiseCutParameters<double> lightNoiseParameters;
+  CsHt::LightNoiseVeto<double> lightNoiseVeto;
   
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
   ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees")
   ("muon-window-length", bpo::value<double>(&muonWindowLength)->required(), "Muon window length [ns]")
   ("muon-definition", bpo::value<CsHt::MuonDefinition<double>>(&muonDefinition)->required(), "Muon definition parameters (Inner Veto charge threshold [DUQ] : visible energy threshold [MeV] : visible energy to Inner Detector charge conversion factor [DUQ/MeV])")
-  ("light-noise-cuts", bpo::value<CsHt::LightNoiseCutParameters<double>>(&lightNoiseParameters)->required(), "Light noise rejection parameters (max RMS charge [DUQ]: RMS slope [DUQ/ns]: max charge difference [DUQ]: max charge ratio : max RMS start time [ns])")
+  ("light-noise-cuts", bpo::value<CsHt::LightNoiseVeto<double>>(&lightNoiseVeto)->required(), "Light noise rejection parameters (max RMS charge [DUQ]: RMS slope [DUQ/ns]: max charge difference [DUQ]: max charge ratio : max RMS start time [ns])")
   ("neutron-window-length", bpo::value<double>(&neutronWindowLength)->required(), "Neutron window length [ns]")
   ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Variable number of bounds (':' separator) on the neutron's energy [MeV]")
   ("pair-time-bounds", bpo::value<CsHt::Bounds<double>>(&pairTimeCorrelationBounds)->required(), "Bounds(':' separator) on the prompt-delayed time correlation [ns]")
@@ -128,7 +128,7 @@ int main(int argc, char* argv[]){
       try{
 	
 	entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, muonDefinition));
-	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters));
+	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseVeto));
 	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, muonWindowLength, candidateIdentifiers));
 	entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds));
 	
