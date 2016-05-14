@@ -81,8 +81,12 @@ namespace CosmogenicHunter{
   template <class T>
   std::ostream& operator<<(std::ostream& output, const EntrySorter<T>& entrySorter){
     
-    for(auto it = entrySorter.getCuts().begin(); it != entrySorter.getCuts().end() - 1; ++it) output<<**it<<"\n====================================\n";
-    output<<(**(entrySorter.getCuts().end() - 1));
+    if(!entrySorter.getCuts().empty()){
+    
+      for(auto it = entrySorter.getCuts().begin(); it != entrySorter.getCuts().end() - 1; ++it) output<<**it<<"\n====================================\n";
+      output<<(**(entrySorter.getCuts().end() - 1));
+      
+    }
     
     return output;
     
