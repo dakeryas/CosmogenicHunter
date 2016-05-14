@@ -13,7 +13,7 @@ namespace CosmogenicHunter{
 
   public:
     LightNoiseCuts() = default;
-    LightNoiseCuts(Flavour flavour, LightNoiseVeto<T> lightNoiseVeto);
+    LightNoiseCuts(LightNoiseVeto<T> lightNoiseVeto);
     const LightNoiseVeto<T>& getLightNoiseVeto() const;
     void setLightNoiseVeto(LightNoiseVeto<T> lightNoiseVeto);
     bool tag(const Entry<T>& entry) const;
@@ -23,8 +23,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  LightNoiseCuts<T>::LightNoiseCuts(Flavour flavour, LightNoiseVeto<T> lightNoiseVeto)
-  :Cuts<T>(flavour),lightNoiseVeto(std::move(lightNoiseVeto)){
+  LightNoiseCuts<T>::LightNoiseCuts(LightNoiseVeto<T> lightNoiseVeto)
+  :Cuts<T>(Flavour::LightNoise),lightNoiseVeto(std::move(lightNoiseVeto)){
     
   }
 
