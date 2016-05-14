@@ -127,10 +127,10 @@ int main(int argc, char* argv[]){
       
       try{
 	
-	entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (muonDefinition));
-	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(lightNoiseVeto));
-	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(muonWindowLength, candidateIdentifiers));
-	entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(neutronEnergyBounds));
+	entrySorter.addCut(std::make_unique<CsHt::MuonCuts<double>> (muonDefinition));
+	entrySorter.addCut(std::make_unique<CsHt::LightNoiseCuts<double>>(lightNoiseVeto));
+	entrySorter.addCut(std::make_unique<CsHt::CandidateCuts<double>>(muonWindowLength, candidateIdentifiers));
+	entrySorter.addCut(std::make_unique<CsHt::NeutronCuts<double>>(neutronEnergyBounds));
 	
       }
       catch(std::invalid_argument& error){
