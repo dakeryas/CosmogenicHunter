@@ -21,7 +21,7 @@ namespace CosmogenicHunter{
     EntrySorter<T>& operator = (EntrySorter<T>&& other) = default;
     virtual ~EntrySorter() = default;//custom destructor implies to define (even if default-ed) all copy / move / assignement operations
     const std::vector<std::unique_ptr<Cuts<T>>>& getCuts() const;
-    void emplaceCut(std::unique_ptr<Cuts<T>> cut);
+    void addCut(std::unique_ptr<Cuts<T>> cut);
     void clearCuts();
     Flavour getFlavour(const Entry<T>& entry) const;
     
@@ -56,7 +56,7 @@ namespace CosmogenicHunter{
   }
   
   template <class T>
-  void EntrySorter<T>::emplaceCut(std::unique_ptr<Cuts<T>> cut){
+  void EntrySorter<T>::addCut(std::unique_ptr<Cuts<T>> cut){
     
     cuts.emplace_back(std::move(cut));
 
@@ -81,8 +81,12 @@ namespace CosmogenicHunter{
   template <class T>
   std::ostream& operator<<(std::ostream& output, const EntrySorter<T>& entrySorter){
     
-    for(auto it = entrySorter.getCuts().begin(); it != entrySorter.getCuts().end() - 1; ++it) output<<**it<<"\n====================================\n";
-    output<<(**(entrySorter.getCuts().end() - 1));
+    if(!entrySorter.getCuts().empty()){
+    
+      for(auto it = entrySorter.getCuts().begin(); it != entrySorter.getCuts().end() - 1; ++it) output<<**it<<"\n====================================\n";
+      output<<(**(entrySorter.getCuts().end() - 1));
+      
+    }
     
     return output;
     

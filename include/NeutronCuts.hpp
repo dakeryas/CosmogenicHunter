@@ -14,7 +14,7 @@ namespace CosmogenicHunter{
 
   public:
     NeutronCuts() = default;
-    NeutronCuts(Flavour flavour, std::vector<Bounds<T>> energyBounds);
+    NeutronCuts(std::vector<Bounds<T>> energyBounds);
     const std::vector<Bounds<T>>& getEnergyBounds() const;
     void setEnergyBounds(std::vector<Bounds<T>> energyBounds);
     bool tag(const Entry<T>& entry) const;
@@ -24,8 +24,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  NeutronCuts<T>::NeutronCuts(Flavour flavour, std::vector<Bounds<T>> energyBounds)
-  :Cuts<T>(flavour),energyBounds(std::move(energyBounds)){
+  NeutronCuts<T>::NeutronCuts(std::vector<Bounds<T>> energyBounds)
+  :Cuts<T>(Flavour::Neutron),energyBounds(std::move(energyBounds)){
     
     for(const auto& energyBound : energyBounds)      
       if(energyBound.hasNegativeEdge()) throw std::invalid_argument(Utility::to_string(energyBound)+"are invalid energy bounds.");

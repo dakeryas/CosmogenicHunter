@@ -15,7 +15,7 @@ namespace CosmogenicHunter{
     
   public:
     CandidateCuts() = default;
-    CandidateCuts(Flavour flavour, double minimumTriggerTime,std::vector<unsigned> candidateIdentifiers);
+    CandidateCuts(double minimumTriggerTime,std::vector<unsigned> candidateIdentifiers);
     double getMinimumTriggerTime() const;
     const std::vector<unsigned>& getCandidateIdentifiers() const;
     void setMinimumTriggerTime(double minimumTriggerTime);
@@ -27,8 +27,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  CandidateCuts<T>::CandidateCuts(Flavour flavour, double minimumTriggerTime, std::vector<unsigned> candidateIdentifiers)
-  :Cuts<T>(flavour),minimumTriggerTime(minimumTriggerTime),candidateIdentifiers(candidateIdentifiers){
+  CandidateCuts<T>::CandidateCuts(double minimumTriggerTime, std::vector<unsigned> candidateIdentifiers)
+  :Cuts<T>(Flavour::Candidate),minimumTriggerTime(minimumTriggerTime),candidateIdentifiers(candidateIdentifiers){
     
     if(minimumTriggerTime < 0) throw std::invalid_argument(std::to_string(minimumTriggerTime)+"ns are not valid candidate cuts");
     

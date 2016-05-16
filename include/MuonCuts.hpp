@@ -13,7 +13,7 @@ namespace CosmogenicHunter{
 
   public:
     MuonCuts() = default;
-    MuonCuts(Flavour flavour, MuonDefinition<T> muonDefinition);
+    MuonCuts(MuonDefinition<T> muonDefinition);
     const MuonDefinition<T>& getMuonDefinition() const;
     void setMuonDefinition(MuonDefinition<T> muonDefinition);
     bool tag(const Entry<T>& entry) const;
@@ -23,8 +23,8 @@ namespace CosmogenicHunter{
   };
   
   template <class T>
-  MuonCuts<T>::MuonCuts(Flavour flavour, MuonDefinition<T> muonDefinition)
-  :Cuts<T>(flavour),muonDefinition(std::move(muonDefinition)){
+  MuonCuts<T>::MuonCuts(MuonDefinition<T> muonDefinition)
+  :Cuts<T>(Flavour::Muon),muonDefinition(std::move(muonDefinition)){
     
   }
 

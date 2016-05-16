@@ -14,12 +14,12 @@ namespace bpo = boost::program_options;
 namespace CosmogenicHunter{
 
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
-  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<EntryAccuracy>& entrySorter, const PairSeeker<SingleAccuracy>& pairSeeker, double muonWindowLenght, double neutronWindowLenght){
+  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<EntryAccuracy>& entrySorter, const PairSeeker<SingleAccuracy>& pairSeeker, double muonWindowLength, double neutronWindowLength){
 
     TTree* globalInfo = dynamic_cast<TTree*>(targetFile->Get("GI"));
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
     
-    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(entrySorter, pairSeeker, muonWindowLenght, neutronWindowLenght);
+    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(entrySorter, pairSeeker, muonWindowLength, neutronWindowLength);
     hunter.chaseAndSave(globalInfo, outputStream);
 
   }
@@ -29,13 +29,13 @@ namespace CosmogenicHunter{
 int main(int argc, char* argv[]){
  
   boost::filesystem::path targetPath, mapPath, outputPath;
-  double muonWindowLenght;
+  double muonWindowLength;
   CsHt::MuonDefinition<double> muonDefinition;
-  double neutronWindowLenght;
+  double neutronWindowLength;
   std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
   CsHt::Bounds<double> pairTimeCorrelationBounds;
   double pairSpaceCorrelationUpCut;
-  CsHt::LightNoiseCutParameters<double> lightNoiseParameters;
+  CsHt::LightNoiseVeto<double> lightNoiseVeto;
   
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
@@ -43,10 +43,10 @@ int main(int argc, char* argv[]){
   ("target,t", bpo::value<boost::filesystem::path>(&targetPath)->required(), "Path of the file to process")
   ("map,m", bpo::value<boost::filesystem::path>(&mapPath)->required(), "Path of the binary map of candidates")
   ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees")
-  ("muon-window-lenght", bpo::value<double>(&muonWindowLenght)->required(), "Muon window lenght [ns]")
+  ("muon-window-length", bpo::value<double>(&muonWindowLength)->required(), "Muon window length [ns]")
   ("muon-definition", bpo::value<CsHt::MuonDefinition<double>>(&muonDefinition)->required(), "Muon definition parameters (Inner Veto charge threshold [DUQ] : visible energy threshold [MeV] : visible energy to Inner Detector charge conversion factor [DUQ/MeV])")
-  ("light-noise-cuts", bpo::value<CsHt::LightNoiseCutParameters<double>>(&lightNoiseParameters)->required(), "Light noise rejection parameters (max RMS charge [DUQ]: RMS slope [DUQ/ns]: max charge difference [DUQ]: max charge ratio : max RMS start time [ns])")
-  ("neutron-window-lenght", bpo::value<double>(&neutronWindowLenght)->required(), "Neutron window lenght [ns]")
+  ("light-noise-cuts", bpo::value<CsHt::LightNoiseVeto<double>>(&lightNoiseVeto)->required(), "Light noise rejection parameters (max RMS charge [DUQ]: RMS slope [DUQ/ns]: max charge difference [DUQ]: max charge ratio : max RMS start time [ns])")
+  ("neutron-window-length", bpo::value<double>(&neutronWindowLength)->required(), "Neutron window length [ns]")
   ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Variable number of bounds (':' separator) on the neutron's energy [MeV]")
   ("pair-time-bounds", bpo::value<CsHt::Bounds<double>>(&pairTimeCorrelationBounds)->required(), "Bounds(':' separator) on the prompt-delayed time correlation [ns]")
   ("pair-space-up-cut", bpo::value<double>(&pairSpaceCorrelationUpCut)->required(), "Upper cut on the prompt-delayed space correlation [mm]");
@@ -127,10 +127,10 @@ int main(int argc, char* argv[]){
       
       try{
 	
-	entrySorter.emplaceCut(std::make_unique<CsHt::MuonCuts<double>> (CsHt::Flavour::Muon, muonDefinition));
-	entrySorter.emplaceCut(std::make_unique<CsHt::LightNoiseCuts<double>>(CsHt::Flavour::LightNoise, lightNoiseParameters));
-	entrySorter.emplaceCut(std::make_unique<CsHt::CandidateCuts<double>>(CsHt::Flavour::Candidate, muonWindowLenght, candidateIdentifiers));
-	entrySorter.emplaceCut(std::make_unique<CsHt::NeutronCuts<double>>(CsHt::Flavour::Neutron, neutronEnergyBounds));
+	entrySorter.addCut(std::make_unique<CsHt::MuonCuts<double>> (muonDefinition));
+	entrySorter.addCut(std::make_unique<CsHt::LightNoiseCuts<double>>(lightNoiseVeto));
+	entrySorter.addCut(std::make_unique<CsHt::CandidateCuts<double>>(muonWindowLength, candidateIdentifiers));
+	entrySorter.addCut(std::make_unique<CsHt::NeutronCuts<double>>(neutronEnergyBounds));
 	
       }
       catch(std::invalid_argument& error){
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]){
       }
 
       CsHt::PairSeeker<float> pairSeeker(pairTimeCorrelationBounds, pairSpaceCorrelationUpCut);
-      CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLenght, neutronWindowLenght);
+      CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLength, neutronWindowLength);
       
     }
     
