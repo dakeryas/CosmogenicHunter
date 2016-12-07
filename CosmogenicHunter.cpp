@@ -40,7 +40,7 @@ int main(int argc, char* argv[]){
   bpo::options_description optionDescription("CosmogenicHunter usage");
   optionDescription.add_options()
   ("help,h", "Display this help message")
-  ("target,t", bpo::value<boost::filesystem::path>(&targetPath)->required(), "Path of the file to process")
+  ("target", bpo::value<boost::filesystem::path>(&targetPath)->required(), "Path of the file to process")
   ("map,m", bpo::value<boost::filesystem::path>(&mapPath)->required(), "Path of the binary map of candidates")
   ("output,o", bpo::value<boost::filesystem::path>(&outputPath)->required(), "Output file where to save the candidate trees")
   ("muon-window-length", bpo::value<double>(&muonWindowLength)->required(), "Muon window length [ns]")
