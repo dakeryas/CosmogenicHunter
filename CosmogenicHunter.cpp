@@ -14,12 +14,12 @@ namespace bpo = boost::program_options;
 namespace CosmogenicHunter{
 
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
-  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLength, CosmogenicHunter::Bounds<double> neutronTimeWindowBounds){
+  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<EntryAccuracy>& entrySorter, const PairSeeker<SingleAccuracy>& pairSeeker, double muonWindowLength, const CosmogenicHunter::Bounds<double>& neutronTimeWindowBounds){
 
     TTree* globalInfo = dynamic_cast<TTree*>(targetFile->Get("GI"));
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
     
-    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(std::move(entrySorter), std::move(pairSeeker), muonWindowLength, std::move(neutronTimeWindowBounds));
+    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(entrySorter, pairSeeker, muonWindowLength, neutronTimeWindowBounds);
     hunter.chaseAndSave(globalInfo, outputStream);
 
   }
