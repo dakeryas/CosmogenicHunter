@@ -14,12 +14,12 @@ namespace bpo = boost::program_options;
 namespace CosmogenicHunter{
 
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
-  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, const EntrySorter<EntryAccuracy>& entrySorter, const PairSeeker<SingleAccuracy>& pairSeeker, double muonWindowLength, double neutronWindowLength){
+  void hunt(TFile* targetFile, const boost::filesystem::path& outputPath, EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLength, CosmogenicHunter::Bounds<double> neutronTimeWindowBounds){
 
     TTree* globalInfo = dynamic_cast<TTree*>(targetFile->Get("GI"));
     std::ofstream outputStream(outputPath.string(), std::ios::binary);
     
-    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(entrySorter, pairSeeker, muonWindowLength, neutronWindowLength);
+    Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy> hunter(std::move(entrySorter), std::move(pairSeeker), muonWindowLength, std::move(neutronTimeWindowBounds));
     hunter.chaseAndSave(globalInfo, outputStream);
 
   }
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
   boost::filesystem::path targetPath, mapPath, outputPath;
   double muonWindowLength;
   CsHt::MuonDefinition<double> muonDefinition;
-  double neutronWindowLength;
+  CsHt::Bounds<double> neutronTimeWindowBounds;
   std::vector<CsHt::Bounds<double>> neutronEnergyBounds;
   CsHt::Bounds<double> pairTimeCorrelationBounds;
   double pairSpaceCorrelationUpCut;
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   ("muon-window-length", bpo::value<double>(&muonWindowLength)->required(), "Muon window length [ns]")
   ("muon-definition", bpo::value<CsHt::MuonDefinition<double>>(&muonDefinition)->required(), "Muon definition parameters (Inner Veto charge threshold [DUQ] : visible energy threshold [MeV] : visible energy to Inner Detector charge conversion factor [DUQ/MeV])")
   ("light-noise-cuts", bpo::value<CsHt::LightNoiseVeto<double>>(&lightNoiseVeto)->required(), "Light noise rejection parameters (max RMS charge [DUQ]: RMS slope [DUQ/ns]: max charge difference [DUQ]: max charge ratio : max RMS start time [ns])")
-  ("neutron-window-length", bpo::value<double>(&neutronWindowLength)->required(), "Neutron window length [ns]")
+  ("neutron-window-bounds", bpo::value<CsHt::Bounds<double>>(&neutronTimeWindowBounds)->required(), "Neutron time window bounds (':' separator) [ns]")
   ("neutron-energy-bounds", bpo::fixed_tokens_value<CsHt::Bounds<double>>(&neutronEnergyBounds, 1, 2)->required(), "Variable number of bounds (':' separator) on the neutron's energy [MeV]")
   ("pair-time-bounds", bpo::value<CsHt::Bounds<double>>(&pairTimeCorrelationBounds)->required(), "Bounds(':' separator) on the prompt-delayed time correlation [ns]")
   ("pair-space-up-cut", bpo::value<double>(&pairSpaceCorrelationUpCut)->required(), "Upper cut on the prompt-delayed space correlation [mm]");
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]){
       }
 
       CsHt::PairSeeker<float> pairSeeker(pairTimeCorrelationBounds, pairSpaceCorrelationUpCut);
-      CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLength, neutronWindowLength);
+      CsHt::hunt<float, float>(targetFile, outputPath, entrySorter, pairSeeker, muonWindowLength, neutronTimeWindowBounds);
       
     }
     

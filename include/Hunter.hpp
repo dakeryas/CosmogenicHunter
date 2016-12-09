@@ -15,20 +15,20 @@ namespace CosmogenicHunter{
     EntrySorter<EntryAccuracy> entrySorter;
     PairSeeker<SingleAccuracy> pairSeeker;
     double muonWindowLength;
-    double neutronWindowLength;
+    CosmogenicHunter::Bounds<double> neutronTimeWindowBounds;
     Window<Shower<Muon<MuonAccuracy>, Single<SingleAccuracy>>> muonShowerWindow;
     
     void processCurrentEntry(InfoAccessor& infoAccessor, cereal::BinaryOutputArchive& outputArchive);
     
   public:
-    Hunter(EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLength, double neutronWindowLength);
+    Hunter(EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLength, CosmogenicHunter::Bounds<double> neutronTimeWindowBounds);
     void chaseAndSave(TTree* globalInfo, std::ofstream& outputStream);//read 'globaInfo' and save the results into 'outputStream'
     
   };
   
   template <class MuonAccuracy, class SingleAccuracy, class EntryAccuracy>
-  Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy>::Hunter(EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLength, double neutronWindowLength)
-  :entrySorter(std::move(entrySorter)),pairSeeker(std::move(pairSeeker)),muonWindowLength(muonWindowLength),neutronWindowLength(neutronWindowLength),muonShowerWindow(0, muonWindowLength){
+  Hunter<MuonAccuracy, SingleAccuracy, EntryAccuracy>::Hunter(EntrySorter<EntryAccuracy> entrySorter, PairSeeker<SingleAccuracy> pairSeeker, double muonWindowLength, CosmogenicHunter::Bounds<double> neutronTimeWindowBounds)
+  :entrySorter(std::move(entrySorter)),pairSeeker(std::move(pairSeeker)),muonWindowLength(muonWindowLength),neutronTimeWindowBounds(std::move(neutronTimeWindowBounds)),muonShowerWindow(0, muonWindowLength){
     
   }
   
@@ -42,7 +42,7 @@ namespace CosmogenicHunter{
       
       auto muon = infoAccessor.getAsMuon<MuonAccuracy>();
       if(muon.getTrack() != Segment<MuonAccuracy>())
-	muonShowerWindow.emplaceEvent(std::move(muon), neutronWindowLength);
+	muonShowerWindow.emplaceEvent(std::move(muon), neutronTimeWindowBounds);
     
     }
     else if(flavour == Flavour::Neutron){
